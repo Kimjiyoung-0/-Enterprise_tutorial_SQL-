@@ -19,6 +19,7 @@ xshell에 orange를 실행해 편하게 SQL문을 짤수 있는 환경구축을 
 
 SQLfiles 폴더는 현장실습을 하며 작성했던 SQL문들과 배웠던 점들을 정리하였고,<br>
 Oracle_Architecture 폴더는 오라클 아키택쳐에 대한 수업을 들었을 때 정리한 내용입니다.<br>
+메인에 있는 SQL 파일들은 실습환경을 구축할때 사용된 SQL파일입니다.
 
 
 
