@@ -96,6 +96,7 @@ Dictionary Cache는 유저한테 노출되지 않는<br>
 이 유저가 SQL문을 사용할 수 있는 지 확인한다.<br>
 (유저의 권한이 적합하지 않으면 캔슬)<br>
 
-
+Buffer Cache는 Datafile에 저장되있는 실질적인 테이블 데이터들을<br>
+을
 
 
