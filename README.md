@@ -80,6 +80,8 @@ SQL문의 기록을 복기하면 결국 최종적으로 데이터를 복구해 �
 
 ## 메모리
 메모리는 크게 PGA ,SGA로 나뉜다.<br>
+
+### PGA
 PGA는 서버 프로세스에 속해 각 유저별로 따로 생성되는 영역이다.<br>
 PGA는 유저 한명의 SORT,JOIN 데이터를 담고있다.<br>
 (SORT,JOIN 데이터는 각각 다르게 쓰기때문)<br>
@@ -107,7 +109,19 @@ Dictionary Cache는 유저한테 노출되지 않는<br>
 이 유저가 SQL문을 사용할 수 있는 지 확인한다.<br>
 (유저의 권한이 적합하지 않으면 캔슬)<br>
 
+#### Buffer Cache
 Buffer Cache는 Datafile에 저장되있는 실질적인 테이블 데이터들을<br>
-을
+보관해 사용하는 메모리 영역이다. 이 영역의 최소단위는 <br>
+Data block으로 유저가 SQL문을 입력하고 소프트 파싱이 안될때<br>
+서버프로세스가 이 영역에 Data들을 올려 처리한다. <br>
+이 영역은 세가지 상태가 있는데 Dirty, Pined, Clean 이다.<br>
+Clean은 비어있는 데이터 블록을, <br>
+Pined는 사용중인 데이터 블록을, <br>
+Dirty는 사용하고 데이터가 남아있는 블록을 의미한다.<br>
+만약 메모리 영역이 모자르거나, 일정시간이 지나면 <br>
+DBWR가 데이터들을 Datafile에 반영하여 <br>
+Dirty 블록들을 Clean으로 처리한다. <br>
+
+
 
 
