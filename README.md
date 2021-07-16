@@ -70,3 +70,32 @@ LGWR는 Redolog file에 로그를 기록한다 <br>
 (로그에는 그동안 입력되있던 SQL문의 기록이 있기 때문에 <br>
 SQL문의 기록을 복기하면 결국 최종적으로 데이터를 복구해 낼수 있다.)<br>
 
+메모리는 크게 PGA ,SGA로 나뉜다.<br>
+PGA는 서버 프로세스에 속해 각 유저별로 따로 생성되는 영역이다.<br>
+PGA는 유저 한명의 SORT,JOIN 데이터를 담고있다.<br>
+(SORT,JOIN 데이터는 각각 다르게 쓰기때문)<br>
+
+SGA는 오라클 인스턴스에 있는 영역으로 <br>
+이 영역은 모든 유저들이 공유해서 쓰는 공간이다.<br>
+SGA는 Shared pool, Buffer Cache, Redo log Buffer Cache로 나뉜다.<br>
+
+Shared pool은 또 Library Cache, Dictionary Cache로 나뉜다.<br>
+
+Library Cache는 SQL의 과정 Plan을 저장한다.<br>
+plan을 저장했다가 유저가 SQL을 입력하고,<br>
+SQL의 오류가 없다고 판단되면 <br>
+라이브러리 캐쉬의 plan을 뒤져본다.<br>
+이때 plan에 똑같은 SQL문의 과정이 있으면<br>
+그 Plan을 사용해 메모리를 아낀다.<br>
+(이과정을 소프트 파싱이라 한다.)<br>
+
+Dictionary Cache는 유저한테 노출되지 않는<br>
+테이블의 아이디 , 유저들의 권한 등을 가지고 있다.<br>
+유저가 SQL문을 입력하면 딕셔너리 캐시에 있는 ,<br>
+테이블 아이디, 유저 권한등을 프로세스가 참고해<br>
+이 유저가 SQL문을 사용할 수 있는 지 확인한다.<br>
+(유저의 권한이 적합하지 않으면 캔슬)<br>
+
+
+
+
