@@ -148,7 +148,7 @@ Log history 및 backup 정보 등<br>
 말그대로 Datafile 이다.<br>
 실질적인 테이블 정보가 저장된다.<br>
 
-###Log 
+### Log 
 Logfile이 저장된다.<br>
 Logfile은 최소 두개 이상의 그룹으로 운영되는데,<br>
 하나의 그룹이 로그로 꽉차면 다른 로그그룹으로 넘어간다.<br>
