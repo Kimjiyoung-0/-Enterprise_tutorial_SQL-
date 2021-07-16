@@ -2,10 +2,10 @@ select * from v$parameter;
 select * from dba_tablespaces;
 /*
 data file
-system Àº metadata¸¦ º¸°üÇÑ´Ù.
-sysaux systmeÀÇ ¿ªÇÒ º¸Á¶
-temp ÀÓ½ÃÀûÀÎ ÀÛ¾÷(PGA¿¡¼­ sort, joinµîÀÇ ÀÛ¾÷À» ÇÒ‹š °ø°£ÀÌ ºÎÁ·ÇÏ¸é »ç¿ë)
-undo rollback¸í·É¾î°¡ ÀÔ·ÂµÉ½Ã, undo¿¡ ´ã±äµ¥ÀÌÅÍ¸¦ ÀÌ¿ëÇØ rollback¼öÇà
+system ì€ metadataë¥¼ ë³´ê´€í•œë‹¤.
+sysaux systmeì˜ ì—­í•  ë³´ì¡°
+temp ì„ì‹œì ì¸ ì‘ì—…(PGAì—ì„œ sort, joinë“±ì˜ ì‘ì—…ì„ í• Â‹Âš ê³µê°„ì´ ë¶€ì¡±í•˜ë©´ ì‚¬ìš©)
+undo rollbackëª…ë ¹ì–´ê°€ ì…ë ¥ë ì‹œ, undoì— ë‹´ê¸´ë°ì´í„°ë¥¼ ì´ìš©í•´ rollbackìˆ˜í–‰
 
 */
 select * from dba_users;
@@ -25,7 +25,7 @@ select * from v$SQL_PLAN;
 select * from v$bh;
 
 select * from v$controlfile_record_section
-/* ÄÁÆ®·ÑÆÄÀÏ°üÇÑÁ¤º¸¸¦ º¸´Â SQL¹®*/
+/* ì»¨íŠ¸ë¡¤íŒŒì¼ê´€í•œì •ë³´ë¥¼ ë³´ëŠ” SQLë¬¸*/
 
 
 
