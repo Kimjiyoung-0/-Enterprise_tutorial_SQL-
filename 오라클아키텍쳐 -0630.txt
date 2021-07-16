@@ -1,0 +1,343 @@
+오라클 아키텍처-Oracle Components
+오라클 아키텍처 = 오라클의 기본적인 구조
+
+Oracle Components의 구조
+1.PROCESS
+2.MEMORY
+3.FILE(DB)
+
+PROCESS
+-BACKGROUND PROCESS : PMON, SMON, DBWR, LGWR, CKPT, …
+DBMS단의 유저가 보이지 않는 영역에서 가동되고있는 프로세스
+-Server Process : Shared or Dedicated
+실질적인 저장, 수정 등이 이루지는 프로세스
+-User Process
+Client라고도 한다. UserProcess는 
+유저가 가동하는 프로그램의 영역이어서
+DBMS의 영역으로 취급하지 않는다.
+
+Memory
+-SGA
+-PGA
+
+File (Database)
+-Control File:이중화
+DB의 구조(Structure)를 포함하는 조그마한 바이너리 파일 
+데이타베이스의 이름과 식별자,데이타파일의 위치 ,백업정보등 
+중요한 정보들이 저장됨.
+-Data File:
+실질적인 데이터가 저장됨
+-Log File: Group & Member
+데이터베이스가 변화한 기록인
+로그 파일이 저장됨
+
+PGA
+-데이터 베이스에 접속하는 모든 유저에게 할당되는 각각의
+서버 프로세스가 독자적으로
+사용하는 오라클 메모리 영역
+SGA에서 필요없는것 
+
+Sort Area(정렬 공간) - Order By 또는 Group By 등의 
+정렬을 수행하기 위한 공간이며 해당 공간에서만 
+정렬이 완료된다면 이를 메모리 정렬이라 한다. 
+해당 정렬 메모리 공간이 부족하다면 디스크를 이용하게된다.
+Session Infomaion(세션 정보)
+서버 프로세스에 의해 추출된 결과 값을 전달하기 위해
+필요한 유저 프로세스의 세션 정보를 저장한다.
+Cursor State (커서 상태 정보)
+해당 SQL의 Parsing 정보가 저장되어있는 주소를 저장 한다.
+Stack Space(변수 저장 공간)
+SQL 문장에 Bind Variable를 사용했을경우 
+해당 Bind Variable를 저장하는 공간이다.
+
+Background Process 
+PMON(Process Moniter)
+Process 장애시 Process Recovery 실시
+Database Buffer Cache에 대한 Cleaning
+lock을 걸거나 푼다.
+비정상적일때 lock를 검
+
+PMON 이 비정상일시 인스턴스 셧다운
+PMON이 죽으면 맛이간다.
+제일 기본적인 역할을 한다.
+
+
+lock
+A유저가 1번 테이블을 insert하고 커밋하지 않은 상태에서
+B유저가 1번 테이블을 update를 할려고 한다면,
+A유저가 commit 할때 까지 B유저의 SQL명령을 막는다.
+
+SMON(System Moniter) 복구담당
+Crash Recovery를 담당
+오라클 인스턴스를 관리하는 프로세스 입니다.
+오라클 인스턴스 fail시 인스턴스를 복구하는 역할
+임시블록 세그먼트를 재사용할 수 있게 만든다.
+더 이상 사용되지 않은 Segment에 대한 정리 작업 담당
+
+SMON은 오라클의 상태 정보로 복구를 한다.
+예) 서버관리자가 서버시간이 빨라 
+서버시간을 5시간 늦췄다.
+허나 늦추고 나서 오류가 생겨
+데이터베이스 복구 작업을 해야한다.
+이때 서버 시간이 달라짐으로써 
+복구데이타를 서버시간을 기준으로 맞출수 없게 되었다.
+이런 사태를 방지하기 위해 오라클은 서버시간이 아닌
+Oracle의 상태정보를 사용해 복구한다.
+
+Oracle의 상태정보
+SCN : System Change Number
+사용자가(트랜잭션이) commit 할경우,
+Redo entry를 logfile에 기록
+값이 증가만 할뿐 ,감소하지는 않는다.(카운트한다.)
+
+예) 만약 오라클이 mount->open 시점에
+컨트롤파일의 SCN과
+데이터 파일의 SCN을 비교했는데
+컨트롤파일의 SCN은 100, 데이터 파일의 SCN은 103이라고할 시,
+이것을 복구대상(SCN이 일치하지않는 대상)으로 간주하고
+복구 작업을 실시한다.
+ 
+CSN (Commit sequnce number)
+Checkpoint 이번트가 발생할 경우 SCN 중 번호를 
+Control File과 Datafile Header에 기록(Checkpoint Process)
+LSN Log Sequence Number
+Log Switch가 발생한 번호
+
+Media Recovery
+Disk나 매체등의 장애로 인한Recovery 입니다.
+
+Phsical Backup으로부터의 복구 : 1 Complete Recovery
+장애 시점까지 Recovery 하는 방법입니다.
+
+Complete Recovery는 변경된 정보를 저장하고 있는 Redo Log 파일들이
+재 사용 되기전에 저장되어지는 Archive File이 필요 하므로 
+Archive Log Mode 에서만 가능하며, NoArchiveLog Mode에서는 백업본 이후
+RedoLog File이 재사용(Archive File이 없는 경우) 이전의 백업본으로만 데이터베이스를 
+복구 할 수 있습니다.
+
+Phsical Backup으로부터의 복구 : 2 Incomplete recovery
+Backup본을 Restore한 이후 변경된 작업이 들어 있는 ArchivedLog
+파일을 찾을 수 없거나, Database를 특정 시점으로 돌리는 방법 입니다.
+
+Logical Backup으로부터의 복구 : Import Utility
+Import Utility $ORACLE_HOME/bin/imp 를 이용하여 데이터를 복구하는 방법입니다.
+(데이터 파일이 손상된 경우, 디비를 다시 설치한후 또는 해당 데이터파일을 재 생성
+한 이후 IMP로 복구 가능)
+
+2.Instance Recovery
+비정상적인 종료(abort 명령어로 shutdown, 정전, CPU고장, 메모리 손실등과 같은 장애)
+에 의해 Oracle Instance가 Error를 일으켜 인스턴스가 실패한 경우입니다.
+1. 비정상적인 종료후 비동기화 되어 있는 상태에서 Database OPEN
+2.롤 포워드(마운트 단계에서 수행) : 마지막 CKPT 이후의 RedoLogFile에 기록된
+모든 변경사항(commit된 데이터와 commit되지 않은 데이터)를
+DBWR에 의해 데이터파일에 기록
+3.데이터 베이스 오픈
+4.롤백 단계: 모든데이터 파일에서 COMMIT되지 않은 데이터를 롤백하는 단계
+5.데이터베이스가 동기화 되어 데이터베이스 운영
+
+*비동기화 되어 있는 상태에서 롤백한 이후에 데이터베이스를 OPEN 하게 되면은 
+DOWN time이 길어지므로, 일단 롤 포워드 단계를 거쳐 데이터베이스를
+오픈한 이후 롤백하는 과정을 Warm-Atart하고 부릅니다.
+DBWR(Database Writer)
+버퍼캐시에 있는 수정된(Dirty) 버퍼의 내용을 데이터 파일에
+기록합니다.
+
+DBWR는 데이터베이스 버퍼캐쉬로부터 데이터 파일로 더티버퍼(dirty buffer)
+를 옮겨 적습니다. 이렇게 함으로써 데이터베이스 버퍼 캐쉬
+내에 충분한 수의 프리버퍼(free buffer)가 사용 가능하게 됩니다.
+
+DBWR proces가 디스크에 쓰는 시점
+server process가 Free Buffer를 못찾는경우
+Dirty Buffer가 threshold value에 도달한 경우
+Timeout이 발생한 경우(3초)
+Checkpoint 이벤트가 발생한 경우
+
+DBWR 프로세스는 지연쓰기(Deferred Write) 방식에 의해 데이터 버퍼 캐쉬의 더티 버퍼를
+데이터 파일로 기록하는 역할을 수행한다. 오라클 데이터 파일의 데이터 블록을
+메모리로 복사한 뒤 메모리에서 읽기 및 변경 작업을 수행한다.
+데이터 버퍼 캐쉬로 복사된 데이터 블록이 변경될 경우 오라클은 해당 데이터블록을 
+변경 및 변경 작업을 수행한다. 데이터버퍼 캐쉬로 복사된 데이터 블록이 변경될
+경우 오라클은 해당 데이터 블록을 변경 즉시 데이터 파일에 기록하지 않고
+추후 여러 개의 변경 작업을 모아서 한번에 디스크로 저장하게 된다. 이와 같이
+변경될 때마다 DBWR 백그라운드 프로세스가 변경 내용을 디스크에 저장하는 것이
+아니라 변경된 데이터 블록이 일정량 모이면 한번에 디스크에 저장하는 지연쓰기
+방식을 사용한다.
+
+지연 쓰기 방식에 의해 변경된 데이터를 디스크로 기록하기 전에 데이터베이스에 
+장애가 발생한다면 메모리에만 저장되어 있던 변경 정보가 유실되므로 데이터 
+정합성에 문제가 발생하게 된다. 이와 같은 현상을 방지하기 위해 오라클은 
+빠른 커밋을 사용하게 된다. 빠른 커밋이란 데이터 변경을 완료하고 커밋을 수행하면
+변경된 내용을 즉시 디스크로 기록하지 않는 지연쓰기를 사용하는 대신 변경에 대한
+로그정보는 즉시 디스크로 기록하는 방법이다. 로그에 대한 기록은 LGWR 백그라운드
+프로세스가 담당한다. 이와 같이 로그 정보를 이용하여 장애 발생시 데이터 정합성을
+유지할 수 있게 빠른 커밋을 이용한다.
+
+LGWR(Log Writer)
+LGWR 프로세스는 Redologbuffer에 기록된 내용을 
+리두로그 파일로 저장한다.
+RedoLogBuffer에서 사용 하는 아키텍처를 확인해보면,
+빠른커밋, 선 로그 기법, 동시 쓰기 가 있다.
+LGWR은 이런 아키텍쳐가 제대로 적용 될 수 있게,
+RedoLogBuffer의 log들을 Disk에 저장하는 역할을 한다.
+ 
+빠른커밋(Fast Commit) - 앞에서 언급했듯이 빠른 커밋이란 
+유저가 특정 작업을 수행하고 커밋을 수행한 후에는 
+즉시 데이터베이스에 저장하여 복구 및 조회를 할 수 있게 하겠다는 뜻이다.
+이는 커밋을 수행하더라도 변경된 데이터 블록을 즉시 디스크로 저장하지는 않지만
+해당 데이터 블록에 대한 조회는 메모리에서 수행하고 복구는 리두 로그 파일에 기록된
+내용을 이용하기 때문에 마치 데이터베이스에 즉시 적용된 것과 같이 하겠다는 뜻이다.
+
+선 로그 기법(Log Ahead) - DML작업을 수행할 경우 실제 데이터에 대해
+DML을 수행하기 전에 데이터들의 변경에 대한 내용을 리두 로그 버퍼에 미리 저장하게 된다.
+이와 같이 수행해야만 작업중 장애가 발생하여도 복구를 수행할 수 있기 때문에 오라클에서는 
+선로그 기법을 사용하게 된다.
+
+동시 쓰기 - 동시 쓰기는 커밋시 로그를 기록하는 부분에서 같은 시점에
+커밋되는 작업들에 대해서는 동시에 리두 로그 파일에 기록겠하다는 의미이다.
+
+Redo Log files는 여러그룹을 돌려가면서 사용하고,
+그런 그룹마다 member를 여러개 둘수 있다.
+LogWrite는 제대로 보존된 member가 하나만 있어도
+commit을 완료한다.
+예)
+1번그룹 내용이 꽉찰시 2번그룹으로
+그룹 마다  멤버를 2개,3개 씩 가짐으로
+member가 유실되어도 제대로된 member만 있다면
+복구 가능
+ 
+
+체크포인트 백그라운드 프로세스 CKPT(Check Point)
+
+체크 포인트를 수행하는 백그라운드 프로세스다.
+
+체크포인트 - 데이터 버퍼 캐쉬의 변경된 데이터 블록을 데이터 파일에 기록하여
+메모리내의 데이터와 데이터 파일에 저장된 데이터를 일치시키는 일련의 작업
+DBWR 프로세스는 특정 조건을 만족해야 변경된 데이터 블록을 디스크의 데이터 파일에 
+기록하게 된다. 로그 스위치에 의한 체크포인트를 제외한 다른 조건을 확인해 보면
+전체 변경된 데이터 블록을 디스크로 기록하는 경우는 존재하지 않는다.
+그렇기 때문에 오라클에서는 데이터의 정합성을 고려하여 데이터 버퍼 캐쉬 내의
+전체 변경된 데이터 블록을 기록하는 작업이 필요하게 되었다. 
+이러한 CKPT 백그라운드 프로세스에 의해 이루어 지게 된다.
+
+체크포인트는 다음과 같은 상황에서 발생한다.
+* 로그 스위치가 발생할 경우
+* 3초마다 발생
+* 테이블 스페이스가 오프라인으로 변경될 경우
+* 데이터베이스가 정상 종료될 경우
+* 사용자가 ALTER SYSTEM CHECKPOINT 명령으로 명시적인 체크포인트를 발생시킬 경우
+* 체크포인트 관련 파라메터에서 정한값에 의해 활동 주기가 되었을 경우
+
+
+
+ARCn(Archiver) - 아카이버
+RedoLogFile의 아키텍처 중 하나가 해당 RedoLogFile을 재사용한다. 
+이 뜻은 RedoLogFile을 다 사용한 후에 다른 RedoLogFile을 사용하게 되고
+그런 방식으로 모든 RedoLogFile을 다 사용한 후에는 처음의
+RedoLogFiled을 다시 사용하게 되므로 기존 로그 정보는 지워지게 된다.
+RedoLog는 복구를 위해 필요한 Log이므로 위와 같은 현상에 의해
+지원진 로그 부분에 대해서는 복구를 수행할 수 없게 된다.
+따라서 복구를 위해서는 해당 RedoLogFile이 재사용에 의해
+지워지기 전에 백업을 수행해야 하며 이와 같은 목적의 백업을 ARCH 
+백그라운드 프로세스가 수행해 주게 된다. 이러한 ARCH 백그라운드
+프로세스를 기동 시키기 위해서는 다음과 같이 몇가지 조건을 만족해야한다.
+*아카이브 로그 모드 필요
+*RedoLogFile에 대한 백업 공간 필요
+ARCH 백그라운드 프로세스는 다음과 같은 경우 작동하게 된다.
+*로그 스위치가 발생하여 아카이브 로그 파일을 생성해야 할 경우
+*장애 복구시 아카이브 로그 파일을 사용할 경우
+
+Processes : Server Process & User Process
+Server Process
+*SQL statement를 Parse하고 실행
+*database buffer에 필요한 block이 없는 경우 datafiles에서 읽음
+*실행결과를 Return
+
+User Process
+*application program(Pro*C program 같은) 또는 Oracle tool
+*connection : user process와 Oracle Database instance 사이의
+communication 통로, interprocess communication mechanisms 또는
+network software
+session : 로그인을 통하여 Oracle Database instance와 user process
+연결하는 특정 connection
+
+Oracle Files
+
+Oracle Database 
+-Datafiles
+-Online Redo Log Files
+-Control Files
+
+Oracle Key Files
+-Offline Archived Redo Log Files
+-Parameter File
+-Password File
+Oracle Log File
+
+-Log File(alert*.log, sqlnet.log, listener.log...)
+-Trace File
+
+Oralcle Files : Control Files
+*database 이름, 식별자, 생성일
+*database files과 log files에 대한 위치 등의 정보
+*Tablespace name
+*Log history 및 Backup 정보(RMAN)
+*현재의 LSN(Log Sequence Number)
+*Checkpoint 정보(CSN)
+*Recovery를 위한 Synchronization 정보 저장
+*Database를 mount 및 open 시 필요
+*서로 다른 Disk에 최소 2개의 control file 저장 권고(이중화)
+*Database 구조 변경시 마다 Backup 권고
+*CONTROL_FILES-파라미터 파일에서 해당 경로 및 이름을 지정
+*Alter database backup controlfile to trace(or path);
+
+Oracle Files : Datafile
+*Database의 data 저장
+*사용자 정의 테이블의 data및 data dictionary의 데이터 저장
+*Rollback Segment저장
+*Database에는 최소 하나의 datafile이 있어야 한다
+*Datafile의 하나의 database에만 속해야한다.
+*Datafile은 하나의 tablespace에만 속해야 한다
+
+*Offline Datafile
+º System Tablespace의 datafile 제외
+
+* Temporary datafile(Locally managed temporary tablespace)
+º 항상 nologging mode로 운영된다.
+º Read only로 만들수 없다
+º Media recovery를 실행하지 않는다
+
+Oracle Files : Redo Log Files
+*Redo Log Files
+º data recovery를 위하여 database의 모든 변경 정보를 기록
+º LGWR가 logfile을 순환하며 기록한다 (Log Switch)
+º 최소 2개의 redo log group이 있어야 한다
+ºARCHIVELOG mode에서는 Online Redo Log File을 Archive
+Destination에 복사한다
+
+*Redo Log Files 이중화
+º 각 group당 최소 2개의 redo log member를 생성하여 redo log file의 손실을 방지
+º 각 group의 모든 member는 동일한 정보 및 동일한 size를 갖는다
+º 각 group의 모든 member는 동시에 변경된다
+º 각 group은 동일한 수의 member로 구성한다
+
+
+
+세그먼트를 이해하기 위해 잠깐동안 32,33,38,39 참고
+select * from v$log;
+select * from v$parameter where name like '%target%';
+Alter system switch logfile;
+select * from v$session;
+select * from dict where table_name like '%$CONTROLFILE%';
+select * from v$controlfile;
+select * from v$controlfile_record_section;
+select * from DBA_DATA_FILES;
+select * from v$datafile;
+select * from v$tempfile;
+select * from DBA_TABLESPACES;
+select * from tab$;
+select * from dba_rollback_segs;
+select * from v$log;
+select * from v$logfile;
+
+
+

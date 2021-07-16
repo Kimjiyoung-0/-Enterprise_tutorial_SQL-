@@ -1,0 +1,148 @@
+DBMS의 기초
+SQL은 질의어이다. 
+HOW가없다. 예를 들어 JAVA나 C같은 
+개발언어들은 어떻게 데이터를 가져올것인지
+그 로직들을 사용자가 직접 작성하지만,
+DBMS는 그 로직들이 짜여져 있기 때문에(이것을 해주는게 옵티마이저다.)
+그런 로직과 과정을 어느정도 이해해야 
+좋은 퍼포먼스를 이루어 낼수 있다.
+
+옵티마이저란?
+SQL을 가장 빠르고 효율적으로 수행할 최적(최저비용)의 
+처리경로를 생성해 주는 DBMS 내부의 핵심엔진이다.
+
+오라클 아키텍처-Oracle Components
+오라클 아키텍처 = 오라클의 기본적인 구조
+
+Oracle Components의 구조
+1.PROCESS
+2.MEMORY
+3.FILE(DB)
+
+PROCESS
+-BACKGROUND PROCESS : PMON, SMON, DBWR, LGWR, CKPT, …
+BDMS단의 유저가 보이지 않는 영역에서 가동되고있는 프로세스
+-Server Process : Shared or Dedicated
+실질적인 저장, 수정 등이 이루지는 프로세스
+-User Process
+Client라고도 한다. UserProcess는 
+유저가 가동하는 프로그램의 영역이어서
+DBMS의 영역으로 취급하지 않는다.
+
+Memory
+-SGA
+-PGA
+
+File (Database)
+-Control File:이중화
+DB의 구조(Structure)를 포함하는 조그마한 바이너리 파일 
+데이타베이스의 이름과 식별자,데이타파일의 위치 ,백업정보등 
+중요한 정보들이 저장됨.
+-Data File:
+실질적인 데이터가 저장됨
+-Log File: Group & Member
+데이터베이스가 변화한 기록인
+로그 파일이 저장됨
+
+Oracle Server
+
+
+DBMS(DataBase Management System)
+Oracle Server : 실질적인 데이터베이스 관리 프로그램
+Oracle Sever= Oracle Instance + Oracle Database
+
+Oracle Database
+Database Files : Operating System Files
+Raw Device or File system
+
+File system : 컴퓨터를 포멧하면 남는 형태 파일의 구조등을 담당
+Raw Device : 파일시스템 마저도 없는 완전 날것의 저장공간
+Raw Device를 사용해 DB를 저장할 경우 10%~15%정도의 
+효율이 올라간다고는 하나, 경우에 따라 다르다.
+
+Oracle Instance = SGA + Background Process
+
+
+SGA (System Global Area)
+
+여러 Sever Process와 Back Ground Process가
+공용으로 사용하는 영역(PGA는 각각의 Sever Process와 Back Ground Process가 개별로 가짐)
+모든 background & Sever Process가 사용(read/write)
+Instance가 시작되면서 할당
+Instance가 종료되면서 해제
+
+Shared Pool, Database Buffer Cache, Redo log
+등으로 구성된다. 
+
+SGA-Shared Pool
+Library cache + Data Dictionary Cache 이다.
+ (+Result cache, buffers for parallel execution messages, control structures)
+
+Shared Pool-Library cache는 Plan(SQL문의 작업과정)을 저장한다.
+모든 유저들의 Plan을 저장하다, 
+저장되어있는 Plan과 똑같은 SQL문이 실행될시
+저장되어있던 Plan을 그대로 가져다 씀으로
+Memory 공간을 아낀다.
+
+Plan:CBO 방식에서 옵티마이저는 주어진 환경(통계정보, SQL문) 
+하에서 최적의 실행계획(PLAN)을 우리에게 제공한다. 
+옵티마이저는 우리에게 어떤 경로로 테이블을 접근하는지, 
+어떤 방식으로 조인하는지, 어떤 인덱스 자원을 사용하는지 
+등에 대한 최적화한 계획(플랜)을 알려준다.
+
+출처: https://argolee.tistory.com/67 [놀멍]
+
+
+Shared Pool-Data Dictionary Cache는
+Data Dictionary 또는 메타 데이터라고 불리는 
+데이터베이스의 내부에 저장된 값이 아닌,
+그 구조에 대한 정보를 담고있다.
+예를 들면 학생이라는 이름의 테이블은
+테이블 이름은 학생이지만, DBMS 내부에서
+이 테이블을 검색할때는 자체적인 아이디가 있다.
+또한 테이블에 저장된 값을 따라갈때,
+트리구조를 따라가는데, 
+Data Dictionary Cache는
+이러한 아이디, 테이블의 트리구조(Root, stem ,leaf) 등이
+저장되어있다.
+
+SGA-Data Buffer Cache
+데이터베이스를 이용할때 빠른 퍼포먼스를 위해서 
+Disk 에 있는 DB정보를 datablock에 카피하여
+Memory(Data Buffer Cache)에서 작업을 하는데 
+이때 메모리의 공간은 한정적이기때문에 
+지속적으로 Memory를 비우고 다시 덮어 씌우는 과정을 거친다.
+이때 버퍼에 세가지 상태가 존재하는데
+Dirty buffer, Pinned buffer, Free buffer 이다.
+Dirty buffer : 저장되어있던 DB정보에는 변화가 일어 났지만,
+변화된 정보가 아직 Disk에 반영이 안된 상태이다.
+Pinned buffer : 변경중인 상태이다.
+Free buffer : 데이터를 포함하지 않은 buffer이다.
+
+지속적으로 사용하면서, 새로운 DB정보가 필요할때는
+Free buffer를 사용 그러다 Free buffer도 여의치 않을경우
+Dirty buffer의 정보를 commit 하여 disk에 반영후 
+Free buffer로 만들어 사용
+
+
+
+
+SGA-Redo log buffer
+데이터 베이스 변경사항에 대한 정보를 담는 버퍼이다.
+사용자가 Insert,Delete등
+데이터에 변화를 주는 SQL문을 사용시 
+그에대한 정보를 저장하여 
+데이터가 날라가는 상황이 벌어져도
+log에 기록된 SQL들을 적용시켜 데이터를 복구해주는 
+역할이다.
+
+
+
+PGA
+bind() 변수 
+
+
+
+
+
+ 

@@ -1,0 +1,45 @@
+ 
+SCN(system change number)
+SCN은 오라클의 시점을 맞추는 기준
+오라클이 데이터 변경에 대한 기록을 할 때 활용되어짐.
+ commit 시 증가
+체크포인트 이벤트가 발생하면
+SCN 번호까지의
+Data file의 헤더를 만든다
+그러면 Redo log buffer 에 있는 
+SCN까지의 데이터를 Datafile에 반영한다.
+
+check point
+특정한 경우에서 어느 한 SCN 시점에서 DBWR이 
+DB Buffer Cache에 있는 내용들을 해당 데이터 파일들에 
+모두 기록하는 이벤트를 Checkpoint 라고 합니다.
+또한 모든 데이터들을 기록한 후 모든 데이터파일과
+컨트롤파일의 SCN 값을 동기화시켜줍니다.
+
+LSN(Log switch number)
+Log switch가 발생하면 LGWR은 
+CKPT에게 LOG SWITCH한것을 알리고
+CHECKPOINT는 일으킬 발생을
+확인한후 로그스위치 확인
+DBWR와 LGWR에게
+시그널로 신호를 한다.
+
+CSN(Commit sequnce number)
+CSN은 check point number를 따라가
+checkpoint 이벤트가 발생하면
+어디서 부터 xheckpoint 이벤트를 해야하는지
+알려주는 역할
+
+
+data file
+system 은 metadata를 보관한다.
+sysaux systme의 역할 보조
+temp 임시적인 작업(PGA에서 sort, join등의 작업을 할떄 공간이 부족하면 사용)
+undo rollback명령어가 입력될시, undo에 담긴데이터를 이용해 rollback수행
+
+
+/*컨트롤 파일에 접근하는것을 mount 
+그뒤로는 open*/
+
+commit은 모든 DBMS가 같지않다.
+MSSQL은 auto commit이 있다.
