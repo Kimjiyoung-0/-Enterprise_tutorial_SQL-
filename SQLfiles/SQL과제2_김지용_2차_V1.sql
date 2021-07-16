@@ -1,8 +1,8 @@
 /*
-1. ¾Æ·¡¿Í °°ÀÌ EMP TableÀ» ÂüÁ¶ÇÏ¿© 
-ºÎ¼­ Æò±Õ ±Þ¿©(¼Ò¼öÁ¡ ¹Ý¿Ã¸²) ÀÌ»óÀÎ 
-»ç¶÷À» Á¶È¸ÇÏ´Â SQLÀ» ÀÛ¼ºÇÏµÇ ±Þ¿© ¿Í 
-ºÎ¼­ Æò±Õ ±Þ¿© Â÷°¡ Å« »ç¶÷¼øÀ¸·Î ³ª¿Àµµ·Ï ÇÏ½Ã¿ä
+1. ì•„ëž˜ì™€ ê°™ì´ EMP Tableì„ ì°¸ì¡°í•˜ì—¬ 
+ë¶€ì„œ í‰ê·  ê¸‰ì—¬(ì†Œìˆ˜ì  ë°˜ì˜¬ë¦¼) ì´ìƒì¸ 
+ì‚¬ëžŒì„ ì¡°íšŒí•˜ëŠ” SQLì„ ìž‘ì„±í•˜ë˜ ê¸‰ì—¬ ì™€ 
+ë¶€ì„œ í‰ê·  ê¸‰ì—¬ ì°¨ê°€ í° ì‚¬ëžŒìˆœìœ¼ë¡œ ë‚˜ì˜¤ë„ë¡ í•˜ì‹œìš”
 */
 SELECT e.DEPTNO,e.empno,e.ename,e.SAL,round(a.avg_sal) as AVG_SAL
 FROM EMP e, (select deptno, avg(sal) as avg_sal
@@ -12,14 +12,14 @@ WHERE sal > a.avg_sal
 and e.deptno = a.deptno
 order by abs(sal-avg_sal) desc;
 /*
-=> trunc(a.avg_sal) °¡ ¼Ò¼öÁ¡ ¹Ý¿Ã¸² ¸Â³ª?
+=> trunc(a.avg_sal) ê°€ ì†Œìˆ˜ì  ë°˜ì˜¬ë¦¼ ë§žë‚˜?
 */
 
 
 /*
-3. ºÎ¼­ Æò±Õ ±Þ¿© ¹Ì¸¸ÀÎ Á÷¿ø¿¡ ´ëÇØ 
-±Þ¿©¸¦ 10% ÀÌ»ó ÀÎ»óÇÏ¿© ¾Æ·¡¿Í °°ÀÌ 
-±Þ¿© ³ôÀº ¼øÀ¸·Î Á¶È¸µÇµµ·Ï ÇÏ´Â SQLÀ» ÀÛ¼ºÇÏ½Ã¿ä.
+3. ë¶€ì„œ í‰ê·  ê¸‰ì—¬ ë¯¸ë§Œì¸ ì§ì›ì— ëŒ€í•´ 
+ê¸‰ì—¬ë¥¼ 10% ì´ìƒ ì¸ìƒí•˜ì—¬ ì•„ëž˜ì™€ ê°™ì´ 
+ê¸‰ì—¬ ë†’ì€ ìˆœìœ¼ë¡œ ì¡°íšŒë˜ë„ë¡ í•˜ëŠ” SQLì„ ìž‘ì„±í•˜ì‹œìš”.
 */
 
 SELECT e.DEPTNO,e.empno,e.SAL,
@@ -31,7 +31,7 @@ where e.deptno = a.deptno
 order by abs(sal) desc;
 
 /*
- ==> Join Á¶°ÇÀÌ ¾ø½¿
+ ==> Join ì¡°ê±´ì´ ì—†ìŠ´
 */
 
 
