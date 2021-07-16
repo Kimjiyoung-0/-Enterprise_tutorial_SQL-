@@ -14,7 +14,7 @@ EMP Table을 참조하여
 emp테이블을 여러번 써야할것 같지만 <br>
 인라인뷰를 이용하면 단두번만 <br>
 이용하면 해결할수 있다.<br>
-
+```SQL
 SELECT e.DEPTNO,e.empno,e.ename,e.SAL,trunc(a.avg_sal) as AVG_SAL
 FROM EMP e, (select deptno, avg(sal) as avg_sal
              from emp
@@ -22,7 +22,7 @@ FROM EMP e, (select deptno, avg(sal) as avg_sal
 WHERE sal > a.avg_sal
 and e.deptno = a.deptno
 order by abs(sal-avg_sal) desc;
-
+```
 이런식으로 아예 from 절에 내가 필요한 정보를 가져와놓고,<br>
 where으로 부서번호에 맞게 분리 시킨다.<br>
 그러면 각 부서별 평균과 그 직원의 월급을 비교할 수 있다.<br>
@@ -37,11 +37,13 @@ SQL에서 order by는 그 값(문자열, 숫자)에 맞게<br>
 예를 들어
 단 JOB이 PRESIDENT,MANAGER,SALESMAN,ANALYST,CLERK 순으로 조회되도록 하시요.<br>
 이러한 문제 가있을 경우 order by 문에<br>
+```SQL
 order by (CASE WHEN job = 'PRESIDENT' THEN 1 
            WHEN job = 'MANAGER' THEN 2
            WHEN job = 'SALESMAN' THEN 3
            WHEN job = 'ANALYST' THEN 4
            WHEN job = 'CLERK' THEN 5 END);
+```
 이렇게 적어주면 된다.<br>
 
 ## not equi 조인 
@@ -56,12 +58,14 @@ Equi 조인은 특정 테이블에 값이 같을때 작동한다<br>
 GRADE별 몇 명인지  조회하는 SQL을 작성하시요<br>
 (SALGRADE 테이블에 얼마에따라 어느 등급인지 정보가 들어가있음)<br>
 라는 문제를 풀때 non Equi 조인을 사용하여 <br>
-
+```SQL
 select * from SALGRADE;
 select grade,count(grade) from emp e, salgrade s
 where s.losal <= e.sal and e.sal <= s.hisal
 group by grade
 order by grade;
+```
+
 이렇게 작성할 수 있다. 이러면 SALGRADE 테이블의 <br>
 등급의 가장낮은 월급값에서 가장 높은 월급사이에 있는 월급값을<br>
 매칭 시킬수 있다.<br>
@@ -87,24 +91,27 @@ Oracle Analytic Function는 <br>
 )<br>
 위에 있던 문제를 이 분석함수를 이용해 풀어보면<br>
 
-
+```SQL
 SELECT DEPTNO,empno,ename,SAL, avg_sal
 from
 (select e.*,round(avg(sal) over(partition by deptno)) avg_SAL FROM EMP e)
 where sal > avg_sal
 order by abs(avg_sal) desc;
+```
 
 이렇게 된다. <br>
 from에 deptno별로(부서별로) 평균을 계산해 그값을 <br>
 쏴주는 형태다.<br>
 ## NOT IN과 NOT EXISTS의 차이점
 예를 들어 가상으로 not in을 쓴 SQL문, NOT EXISTS를 쓴 SQL문이 있다고 하자<br>
+```SQL
 SELECT *
 FROM TEST! A
 WHERE A.NO NIT IN (SELECT NO FROM TEST2)
 
 SELECT * FROM TEST1 A
 WHERE NOT EXISTS(SELECT 1 FROM TEST2 B WHERE A.NO = B.NO)
+```
 
 이 둘의 차이는 NULL값이 나오냐 안나오냐에 있다.<br>
 
