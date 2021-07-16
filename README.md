@@ -122,6 +122,8 @@ Dirty는 사용하고 데이터가 남아있는 블록을 의미한다.<br>
 DBWR가 데이터들을 Datafile에 반영하여 <br>
 Dirty 블록들을 Clean으로 처리한다. <br>
 
+#### Redo Log Buffer Cache
+log buffer cache에는 로그
 
 
 
