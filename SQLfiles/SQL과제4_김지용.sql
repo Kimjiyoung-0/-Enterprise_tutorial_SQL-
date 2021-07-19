@@ -65,7 +65,15 @@ FROM EMP e)
 /*
 3. 아래와 같이 2번 SQL을 참조하여 부서별로 
 SAL,HIREDATE 순으로 ENAME을 나열하는 SQL을 작성하시요.
+
 */
+
+select deptno, ename, NUM_sal
+from
+(select e.*,
+count(empno)over(partition by e.deptno order by sal, hiredate) NUM_sal
+FROM EMP e) a
+order by deptno;
 
 select deptno,
 max(decode(num_sal,1,ename,null)) as ename_1,
@@ -81,5 +89,20 @@ FROM EMP e) a
 group by deptno
 order by deptno;
 
-select * from emp;
+
+select deptno,
+decode(num_sal,1,ename,null) as ename_1,
+decode(num_sal,2,ename,null) as ename_2,
+decode(num_sal,3,ename,null) as ename_3,
+decode(num_sal,4,ename,null) as ename_4,
+decode(num_sal,5,ename,null) as ename_5,
+decode(num_sal,6,ename,null) as ename_6
+from
+(select e.*,
+count(empno)over(partition by e.deptno order by sal, hiredate) NUM_sal
+FROM EMP e) a
+order by deptno;
+
+
+
 
