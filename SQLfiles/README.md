@@ -128,4 +128,59 @@ EXISTS는 서브쿼리가 TRUE인지 FALSE인지 체크하는 것이므로<br>
 NOT EXISTS는 서브쿼리가 FALSE이면 전체적으로 TRUE가 됩니다.<br>
 서브쿼리에서 TEST1과 TEST2의 조인시 NULL은 결과에서  빠지게 됩니다.<br>
 이것은 서브쿼리를 FALSE로 만들게 되고<br>
-전체먹으로 TRUE가 되어 TEST1의 NULL값이 결과에 나오게 됩니다.<br>
+전체적으로 TRUE가 되어 TEST1의 NULL값이 결과에 나오게 됩니다.<br>
+
+## 세로로 출력되는 데이터를 가로쓰기
+
+3.부서별로 SAL 순으로 ENAME을 나열하는 SQL을 작성하시요.<br>
+라는문제 가 있다고하자 그러면 간단하게<br>
+```SQL
+select deptno,num_sal,ename
+from
+(select e.*,
+count(empno)over(partition by e.deptno order by sal, hiredate) NUM_sal
+FROM EMP e) a
+order by deptno;
+```
+이런 문장으로 처리할 수 있다.<br>
+
+허나, 세로로 나오는 데이터를 가로로 출력해야한다면 어떻게 할까<br>
+
+먼저 셀렉트 문을 잘 설계해보자 . <br>
+세로로나오는 데이터를 가로로 출력할려면, 셀렉트 절에 많은 인자가 들어갈 것이다.<br>
+```SQL
+select deptno,
+decode(num_sal,1,ename,null) as ename_1,
+decode(num_sal,2,ename,null) as ename_2,
+decode(num_sal,3,ename,null) as ename_3,
+decode(num_sal,4,ename,null) as ename_4,
+decode(num_sal,5,ename,null) as ename_5,
+decode(num_sal,6,ename,null) as ename_6
+from
+(select e.*,
+count(empno)over(partition by e.deptno order by sal, hiredate) NUM_sal
+FROM EMP e) a
+order by deptno;
+```
+이것을 출력하면 빈칸이 중간에 끼어있긴하지만,<br>
+가로로 출력하는데는 성공한다.<br>
+
+그러면 이제 어떻게 빈칸을 없앨까<br>
+바로 그룹바이와, max함수를 사용한다.<br>
+
+```SQL
+select deptno,
+max(decode(num_sal,1,ename,null)) as ename_1,
+max(decode(num_sal,2,ename,null)) as ename_2,
+max(decode(num_sal,3,ename,null)) as ename_3,
+max(decode(num_sal,4,ename,null)) as ename_4,
+max(decode(num_sal,5,ename,null)) as ename_5,
+max(decode(num_sal,6,ename,null)) as ename_6
+from
+(select e.*,
+count(empno)over(partition by e.deptno order by sal, hiredate) NUM_sal
+FROM EMP e) a
+group by deptno
+order by deptno;
+```
+이런식으로 출력하면 내가 원하는 값만 뽑아올 수 있다.<br>
