@@ -4,26 +4,26 @@
 */
 /*join*/
 
-select gunbun, empno,ename,job,mgr,hiredate,sal,comm,deptno
+select e.*
 from 
     (
-    select rownum gunbun,empno 
-    from emp
-    union all
-    select rownum gunbun ,empno 
-    from emp
-    ) j 
-natural join 
-emp e
+    select level
+    from dual 
+    connect by level <= 2
+    )  
+cross join 
+    (
+    select rank() over (order by empno) gunbun, emp.*
+    from 
+    emp 
+    ) e
 order by gunbun,empno  ;
 
 /*union*/
-select rank() over (order by empno) gunbun,
-empno,ename,job,mgr,hiredate,sal,comm,deptno 
+select rank() over (order by empno) gunbun,emp.*
 from emp
 union all
-select rank() over (order by empno)gunbun,
-empno, ename,job,mgr,hiredate,sal,comm,deptno 
+select rank() over (order by empno)gunbun,emp.*
 from emp
 order by gunbun;
 
@@ -34,24 +34,33 @@ gubun 컬럼을 두어 첫번째 로우와 두번째
 로우를 구분하는 컬럼을 둔다. 총 28건 조회되며 순서는 empno 와 gubun 컬럼순으로 조회되도록 함. 
 */
 /*union*/
-select 1 gunbun, empno, ename,job,mgr,hiredate,sal,comm,deptno 
-from emp
-union all
-select 2 gunbun,empno, ename,job,mgr,hiredate,sal,comm,deptno 
-from emp
+select *
+from
+(
+    (
+    select 1 gunbun, e.*
+    from emp e
+    )
+    union all
+    (
+    select 2 gunbun, e2.*
+    from emp e2
+    )
+)
 order by empno, gunbun;
 
 /*join*/
 select * from
     (
-    select 1 gunbun 
+    select level gunbun
     from dual 
-    union 
-    select 2 
-    gunbun 
-    from dual ) 
+    connect by level <= 2
+    ) 
 natural join 
-    (select * from emp)
+    (
+    select * 
+    from emp
+    )
 order by empno, gunbun;
 
 /*
@@ -71,7 +80,16 @@ natural join
     from dual 
     connect by level <= 12
     );
-
+    
+    
+ /*
+    select 
+    to_char(sysdate,'yyyy/')||
+    to_char(lpad(level, 2, '0'))||
+    '/01' as saldate
+    from dual 
+    connect by level <= 12;
+*/
 /*
 4. 3번 답을 사용하여 아래와 
 같이 월별 sal sum이 나오도록 하여 
@@ -79,7 +97,7 @@ natural join
 rollup 사용하지 말것..
 */
 select empno,ename,job,saldate,sal
-from (
+from ( 
     select empno,ename,job,sal
     from emp
     union all
