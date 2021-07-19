@@ -4,7 +4,7 @@
 오라클 프로그램이 돌아가는 환경은 크게 3가지로 분류됨<br>
 
 프로세스, 메모리 ,파일 로 구분됨<br>
-![image](https://user-images.githubusercontent.com/71188378/126092827-e72f30ad-9878-488a-917e-10627a25ec7a.png)
+![image](https://user-images.githubusercontent.com/71188378/126093081-a4cd664e-29ad-483c-bad8-5201b0c45045.png)
 
 ## 프로세스<br>
 프로세스는 말그대로 오라클의 프로세스들을 뜻함<br>
