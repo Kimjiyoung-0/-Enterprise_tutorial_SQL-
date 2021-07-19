@@ -138,3 +138,97 @@ Logfile은 최소 두개 이상의 그룹으로 운영되는데,<br>
 A그룹의 2번멤버, B그룹의 1번 멤버의 정보로 데이터 베이스를 온전하게<br>
 유지할 수 있다.<br>
 
+
+## SQL문의 실행과정<br>
+### select문 실행과정(그림 참조)
+
+클라이언트에서 SQL문 전송 
+서버 프로세스에서 받는다
+
+shared pool에 library cache에서
+plan을 찾는다.
+(만약 조인,order by시 PGA에 저장) 
+plan을 찾는데, 있으면 그 plan을 따라가고(소프트 파싱),
+없으면 새로운 plan 생성(하드 파싱)
+Data Dictonary Cache에서 테이블등의 정보를 확인해 권한확인
+
+그 다음  하드파싱을 했을시 
+DB(Data file)에서 테이블, 인덱스 정보를 읽어와서 
+Buffer cache에 올린다.
+그런뒤 결과를 종합하여
+유저 에게 리턴
+
+### DML(insert, delete, update) 실행 과정
+클라이언트에서 SQL문 전송
+서버 프로세스에서 받는다.
+
+shared pool에 library cache에서
+plan을 찾는다.
+(만약 조인,order by시 PGA에 저장) 
+plan을 찾는데, 있으면 그 plan을 따라가고(소프트 파싱),
+없으면 새로운 plan 생성(하드 파싱)
+Data Dictonary Cache에서 테이블등의 정보를 확인해 권한확인
+
+plan이 생성되면 
+Datafiles에서 DB wirter가 Datafile를 읽어옴
+그 다음 Buffer Cache에 올라온 데이타에 
+변경된 데이타를 반영
+이때 Before은 rollback segment에 
+after는 Buffer Cache의 데이터 블럭에
+Before after 둘다는 Redo log file에 저장된다.
+또한, 사용자가 커밋을 안해도 
+오라클은 커밋을 가정하고, 돌아가는 알고리즘으로인해(빠른 커밋) 
+일정시간 마다, 또는 Redo log Buffer Cache가 33퍼가 채워졌을 때 등
+Redo log file이 Log Writer에 의해 
+Log file에 저장됨.
+
+Buffer Cache에 있는 데이터는 그 크기가 커
+알고리즘에 따라 
+일정시간 마다, 또는 Buffer Cache에 공간이 필요한데 데이터블록이
+Dirty(log는 기록됬지만 Buffer에 남아있는 Data)일때
+DBWriter에 의해 Data files에 기록됨
+
+만약 이때 서버가 다운되어 
+데이터가 날아갔을시,
+Check point를 기준으로 Redo log files를 읽어서 복구
+
+log file에 반영되면 그때 유저한테 결과 리턴
+
+### DDL(drop, create, Alter) 실행 과정
+클라이언트에서 SQL문 전송
+서버 프로세스에서 받는다.
+
+DDL은 무조건 하드 파싱으로 진행된다.
+(만약 조인,order by시 PGA에 저장)
+Data Dictionary Cache에서 테이블등의 정보를 확인해 권한확인
+
+plan이 생성되면 
+Datafiles에서 DB wirter가 Datafile를 읽어옴
+그 다음 Buffer Cache에 올라온 데이타에 
+변경된 데이타를 반영
+이때 Before은 rollback segment에 
+after는 Buffer Cache의 데이터 블럭에
+Before after 둘다는 Redo log file에 저장된다.
+또한, 사용자가 커밋을 안해도 
+오라클은 커밋을 가정하고, 돌아가는 알고리즘으로인해(빠른 커밋) 
+일정시간 마다, 또는 Redo log Buffer Cache가 33퍼가 채워졌을 때 등
+Redo log file이 Log Writer에 의해 
+Log file에 저장됨.
+
+Buffer Cache에 있는 데이터는 그 크기가 커
+알고리즘에 따라 
+일정시간 마다, 또는 Buffer Cache에 공간이 필요한데 데이터블록이
+Dirty(log는 기록됬지만 Buffer에 남아있는 Data)일때
+DBWriter에 의해 Data files에 기록됨
+
+만약 이때 서버가 다운되어 
+데이터가 날아갔을시,
+Check point를 기준으로 Redo log files를 읽어서 복구
+
+log file에 반영되면 그때 유저한테 결과 리턴
+또한 DDL은 실행되면, 묵시적인 commit이 일어난다.(무조건)
+
+DDL이 커밋되면 Dictionary Cache의 테이블 정보,
+Data file등이 DDL에 맞춰서 알고리즘(옵티마이저가)알아서 갱신한다.
+
+log에 기록되면 결과를 유저한테 리턴한다.
