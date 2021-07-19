@@ -142,7 +142,10 @@ count(empno)over(partition by e.deptno order by sal, hiredate) NUM_sal
 FROM EMP e) a
 order by deptno;
 ```
+
 이런 문장으로 처리할 수 있다.<br>
+![image](https://user-images.githubusercontent.com/71188378/126087921-5008903a-e95a-4eef-84b5-18091614a83e.png)
+
 
 허나, 세로로 나오는 데이터를 가로로 출력해야한다면 어떻게 할까<br>
 
@@ -164,6 +167,7 @@ order by deptno;
 ```
 이것을 출력하면 빈칸이 중간에 끼어있긴하지만,<br>
 가로로 출력하는데는 성공한다.<br>
+![image](https://user-images.githubusercontent.com/71188378/126087959-8234b970-5c03-4486-b377-2d6472a191d0.png)
 
 그러면 이제 어떻게 빈칸을 없앨까<br>
 바로 그룹바이와, max함수를 사용한다.<br>
@@ -183,4 +187,6 @@ FROM EMP e) a
 group by deptno
 order by deptno;
 ```
+
 이런식으로 출력하면 내가 원하는 값만 뽑아올 수 있다.<br>
+![image](https://user-images.githubusercontent.com/71188378/126087992-7023ae91-f475-4a53-9ec0-8712c9adedbc.png)
