@@ -139,17 +139,19 @@ Logfile은 최소 두개 이상의 그룹으로 운영되는데,<br>
 A그룹의 2번멤버, B그룹의 1번 멤버의 정보로 데이터 베이스를 온전하게<br>
 유지할 수 있다.<br>
 
-
+![image](https://user-images.githubusercontent.com/71188378/126094172-3255413b-0983-4664-a83f-1d6d4bbe4e88.png)
 ## SQL문의 실행과정<br>
 ### select문 실행과정(그림 참조)
 
-클라이언트에서 SQL문 전송 
+클라이언트에서 SQL문 전송<br>
 서버 프로세스에서 받는다
 
 shared pool에 library cache에서
 plan을 찾는다.
 (만약 조인,order by시 PGA에 저장) 
+
 plan을 찾는데, 있으면 그 plan을 따라가고(소프트 파싱),
+
 없으면 새로운 plan 생성(하드 파싱)
 Data Dictonary Cache에서 테이블등의 정보를 확인해 권한확인
 
