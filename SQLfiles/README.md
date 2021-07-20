@@ -218,3 +218,41 @@ select
 ![image](https://user-images.githubusercontent.com/71188378/126243405-0d8cbadd-f9bb-4238-af29-afc1515419e7.png)
 
 1년의 12달이 잘출력된다.<br>
+
+## UNION
+UNION은 세로로 결과를 합쳐주는 쿼리이다.<br>
+좀더 정확히 말하자면 select문의 결과 두개를 합쳐서 출력해준다.<br>
+그렇기 때문에 출력할때 컬럼의 갯수, 데이터 타입이 같아야한다.<br>
+
+### UNION 
+그냥 UNION 이라고만 쓰면 중복은 제거된 채로 출력된다.<br>
+
+```SQL
+    select empno,ename,job,sal
+    from emp
+    union 
+    select empno,ename,job,sal
+    from emp;
+
+```
+![image](https://user-images.githubusercontent.com/71188378/126243868-6dca0a34-187c-4a50-9ae2-cf849e00ac6d.png)
+
+emp 테이블을 그냥 출력했을때와 같은 결과(15컬럼)가 나온다.<br>
+중복되는 값이 전부 짤렸기 때문<br>
+
+### UNION ALL
+UNION ALL을 사용하면 중복은 제거되지 않는다.<br>
+
+```SQL
+    select empno,ename,job,sal
+    from emp
+    union ALL 
+    select empno,ename,job,sal
+    from emp;
+
+```
+![image](https://user-images.githubusercontent.com/71188378/126244028-caef4a16-5050-4a55-b3f0-0a93da238c70.png)
+emp 테이블을 그냥 출력했을때와 다른 결과(30컬럼)가 나온다.<br>
+중복되는 값이 전부 보존되어 출력되었기 때문<br>
+
+
