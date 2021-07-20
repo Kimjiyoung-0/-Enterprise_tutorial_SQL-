@@ -24,7 +24,7 @@ and e.deptno = a.deptno
 order by abs(sal-avg_sal) desc;
 ```
 ![image](https://user-images.githubusercontent.com/71188378/126244527-83a41fb6-c8d4-4ccb-8afb-702692bc002f.png)
-
+<br>
 이런식으로 아예 from 절에 내가 필요한 정보를 가져와놓고,<br>
 where으로 부서번호에 맞게 분리 시킨다.<br>
 그러면 각 부서별 평균과 그 직원의 월급을 비교할 수 있다.<br>
@@ -48,7 +48,7 @@ order by (CASE WHEN job = 'PRESIDENT' THEN 1
 ```
 이렇게 적어주면 된다.<br>
 ![image](https://user-images.githubusercontent.com/71188378/126244511-4443873d-bbed-4da7-ac89-1177cf46a3b3.png)
-
+<br>
 
 ## not equi 조인 
 Equi 조인은 특정 테이블에 값이 같을때 작동한다<br>
@@ -70,6 +70,7 @@ group by grade
 order by grade;
 ```
 ![image](https://user-images.githubusercontent.com/71188378/126244577-e0ced6a4-8661-4bf3-a75e-7c5d74c17b14.png)
+<br>
 이렇게 작성할 수 있다. 이러면 SALGRADE 테이블의 <br>
 등급의 가장낮은 월급값에서 가장 높은 월급사이에 있는 월급값을<br>
 매칭 시킬수 있다.<br>
@@ -103,7 +104,7 @@ where sal > avg_sal
 order by abs(avg_sal) desc;
 ```
 ![image](https://user-images.githubusercontent.com/71188378/126244643-cc0a83fa-389f-4cca-a585-94bc1a1c9124.png)
-
+<br>
 이렇게 된다. <br>
 from에 deptno별로(부서별로) 평균을 계산해 그값을 <br>
 쏴주는 형태다.<br>
@@ -150,7 +151,7 @@ order by deptno;
 
 이런 문장으로 처리할 수 있다.<br>
 ![image](https://user-images.githubusercontent.com/71188378/126087921-5008903a-e95a-4eef-84b5-18091614a83e.png)
-
+<br>
 
 허나, 세로로 나오는 데이터를 가로로 출력해야한다면 어떻게 할까<br>
 
@@ -173,7 +174,7 @@ order by deptno;
 이것을 출력하면 빈칸이 중간에 끼어있긴하지만,<br>
 가로로 출력하는데는 성공한다.<br>
 ![image](https://user-images.githubusercontent.com/71188378/126087959-8234b970-5c03-4486-b377-2d6472a191d0.png)
-
+<br>
 그러면 이제 어떻게 빈칸을 없앨까<br>
 바로 그룹바이와, max함수를 사용한다.<br>
 
