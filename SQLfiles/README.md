@@ -190,3 +190,31 @@ order by deptno;
 
 이런식으로 출력하면 내가 원하는 값만 뽑아올 수 있다.<br>
 ![image](https://user-images.githubusercontent.com/71188378/126087992-7023ae91-f475-4a53-9ec0-8712c9adedbc.png)
+
+## 12달 뽑아오기 
+만약 1년의 12달을 출력해야한다면 어떻게 해야할까<br>
+일단 1에서 12까지 나오는 쿼리를 작성해야 할것이다.<br>
+이렇게 다른언어에서 반복문의 값 처럼 SQL문에서 사용할려면 level<br>
+을 쓰면 된다.<br>
+```SQL
+select
+    lpad(level,2,'0')
+    from dual 
+    connect by level <= 12;
+```
+
+![image](https://user-images.githubusercontent.com/71188378/126243265-fccda9dc-6a23-408e-bc38-8cbe7fea486c.png)
+01부터 12까지 잘출력된다. 여기다 날짜 포멧을 붙이면<br>
+
+```SQL
+    select 
+    to_char(sysdate,'yyyy/')||
+    to_char(lpad(level, 2, '0'))||
+    '/01' as saldate
+    from dual 
+    connect by level <= 12;
+ ```   
+    
+![image](https://user-images.githubusercontent.com/71188378/126243405-0d8cbadd-f9bb-4238-af29-afc1515419e7.png)
+
+1년의 12달이 잘출력된다.<br>
