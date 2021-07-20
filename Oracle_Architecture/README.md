@@ -127,6 +127,7 @@ Log history 및 backup 정보 등<br>
 ### Data 
 말그대로 Datafile 이다.<br>
 실질적인 테이블 정보가 저장된다.<br>
+SYSTEM FILE
 
 ### Log 
 Logfile이 저장된다.<br>
