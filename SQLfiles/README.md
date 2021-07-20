@@ -23,6 +23,8 @@ WHERE sal > a.avg_sal
 and e.deptno = a.deptno
 order by abs(sal-avg_sal) desc;
 ```
+![image](https://user-images.githubusercontent.com/71188378/126244527-83a41fb6-c8d4-4ccb-8afb-702692bc002f.png)
+
 이런식으로 아예 from 절에 내가 필요한 정보를 가져와놓고,<br>
 where으로 부서번호에 맞게 분리 시킨다.<br>
 그러면 각 부서별 평균과 그 직원의 월급을 비교할 수 있다.<br>
@@ -45,6 +47,8 @@ order by (CASE WHEN job = 'PRESIDENT' THEN 1
            WHEN job = 'CLERK' THEN 5 END);
 ```
 이렇게 적어주면 된다.<br>
+![image](https://user-images.githubusercontent.com/71188378/126244511-4443873d-bbed-4da7-ac89-1177cf46a3b3.png)
+
 
 ## not equi 조인 
 Equi 조인은 특정 테이블에 값이 같을때 작동한다<br>
@@ -65,7 +69,7 @@ where s.losal <= e.sal and e.sal <= s.hisal
 group by grade
 order by grade;
 ```
-
+![image](https://user-images.githubusercontent.com/71188378/126244577-e0ced6a4-8661-4bf3-a75e-7c5d74c17b14.png)
 이렇게 작성할 수 있다. 이러면 SALGRADE 테이블의 <br>
 등급의 가장낮은 월급값에서 가장 높은 월급사이에 있는 월급값을<br>
 매칭 시킬수 있다.<br>
