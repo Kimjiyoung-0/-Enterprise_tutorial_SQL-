@@ -102,6 +102,7 @@ from
 where sal > avg_sal
 order by abs(avg_sal) desc;
 ```
+![image](https://user-images.githubusercontent.com/71188378/126244643-cc0a83fa-389f-4cca-a585-94bc1a1c9124.png)
 
 이렇게 된다. <br>
 from에 deptno별로(부서별로) 평균을 계산해 그값을 <br>
