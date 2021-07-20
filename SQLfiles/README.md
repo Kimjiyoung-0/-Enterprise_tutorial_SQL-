@@ -269,6 +269,7 @@ emp 테이블을 그냥 출력했을때와 다른 결과(30컬럼)가 나온다.
     from emp;
 ```
 ![image](https://user-images.githubusercontent.com/71188378/126244184-b380559a-284a-402b-a77b-511ee433c54d.png)
+<br>
 15개의 컬럼이 있는 emp 테이블에 <br>
 sum(sal) 값 단하나만이 추가되었다.<br>
 
