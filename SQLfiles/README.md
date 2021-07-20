@@ -252,7 +252,24 @@ UNION ALL을 사용하면 중복은 제거되지 않는다.<br>
 
 ```
 ![image](https://user-images.githubusercontent.com/71188378/126244028-caef4a16-5050-4a55-b3f0-0a93da238c70.png)
+<br>
 emp 테이블을 그냥 출력했을때와 다른 결과(30컬럼)가 나온다.<br>
 중복되는 값이 전부 보존되어 출력되었기 때문<br>
+
+### UNION 응용
+그렇다면 만약 '원하는 값하고만 합치고 싶다' 라는 <br>
+생각이 들면 어떻게 해야할까 <br>
+간단하다 null로 컴럼의 갯수를 맞춰주면 된다.<br>
+
+```SQL
+    select empno,ename,job,sal
+    from emp
+    union all
+    select null,null,null,sum(sal)
+    from emp;
+```
+![image](https://user-images.githubusercontent.com/71188378/126244184-b380559a-284a-402b-a77b-511ee433c54d.png)
+15개의 컬럼이 있는 emp 테이블에 <br>
+sum(sal) 값 단하나만이 추가되었다.<br>
 
 
