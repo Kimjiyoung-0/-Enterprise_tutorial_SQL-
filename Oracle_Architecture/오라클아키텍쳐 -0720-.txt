@@ -1,0 +1,336 @@
+ADMIN 
+
+
+Storage Structure Relationship ppt 32
+그림 참조
+피지컬 = OS관점
+로지컬 = 오라클 관점
+오라클은 I/O를 OS한테 요청한다.
+로지컬 스트럭쳐 구성을 앞글자만 따서 best라고한다.
+
+ppt 33
+그림 참조
+Segment [extent1 (block1, block2)
+	extent2 (block1, block2) ]
+
+무조건 os블록은 오라클의 블록보다 작다.
+이로 인한 문제점
+
+OS의 블록이 1K라고가정
+DB의 블록 8k라고 하면,
+DB는 8개의 블록이 하나의 단위이길 바람
+OS에선 정상적으로 입력했지만
+오라클 입장에서는 블록이 제대로 쓰여지지 않을수도 있다.
+
+그래서 DB데이터 블록에는 Header ,Body 가 있다.
+
+Extent : 할당의 기본단위 (테이블을 증축할때의 기본단위)
+연속된 데이터베이스 블럭의 집합
+/*
+OS 와 DB는 서로의 구성을 모른다
+(뒷 배경을 감안하지 않는다.)
+즉, OS입장에서 I/O를 효율적으로 제공한게
+DB입장에서 아닐수도 있다.
+*/
+Segment : 
+Extent를 가지고있다. 
+Extent의 집합 이라고 정의하기도 한다.
+실제적인 물리적인 공간을 차지하는 것들
+table Segment, Index Segment
+/*
+오브젝트
+물리적 공간이 있음
+Table,Index
+물리적 공간이 없음
+View
+Synonym
+Sequnce
+*/
+
+Data Block Format ppt34
+Block 
+은 데이터가 들어있는 영역, 
+
+Block Header
+Block address, segment type 등의
+일반적인 block 정보
+Table dictionary
+Block내의 row를 가지는 table에 대한 정보
+Row dictionary
+Block내의 실제 row의 row data area의
+adress 등의 정보
+처음 할당될 때 일정한 공간을 확보
+Free space
+새로운 rows나 rows Update을 위한 빈공간
+Transaction entry hold - (23bytes)
+Row Data
+Block내의 table 또는 index의 실 데이터
+Row는 하나 이상의 block에 걸쳐 있을 수 
+있다.
+
+로우를 줄이면(분할 수 를 줄이면)
+데이터를 저장할때는 비효율적,
+헤더가 짧아짐
+
+로우를 늘리면 반대
+
+Free space management ppt 35
+
+chaining
+블록 사이즈보다 데이터가 클때
+예) 게시판의  글쓰기의 본문이 엄청나게 길때
+C람 B람등을 사용 
+블록을 조정해야 할 수도 있다.
+
+Migrating
+예)게시판에 짧은 글만 썻다가 수정으로 긴 글을 썻을때
+이럴때를 대비하여 Free space를 놔둔다
+만약 Free space를 넘으면 다른 블록으로 옮긴다 
+주소를 남긴다(비효율적으로 변함)
+
+중요한 Freespace관리 ppt 35
+옛날에는 DBA가 했지만 요즘은 오라클이 해준다.
+
+
+Extents ppt 37
+데이터베이스 스토리지의 연속된 블록
+Extent가 할당 될경우
+Create,Extentded,Altered
+Extent가 해지되는 경우
+Dropped, Truncated, 자동 resized(rollback segment)
+
+개발자가 주의 해야하는경우 
+drop 이나 delete는 복구 가능 , Truncated는 복구 불가능
+최근에는 drop도 윈도우의 휴지통과 비슷한 개념이 생겨 복구 할 수 있지만,
+Truncated는 안된다.
+
+Segments ppt 38
+
+클러스터
+사전의 의미는 결합된
+여러의미로 사용 
+
+조인을 효율적으로 하기위해서
+미리 결합해놓음(키값을 이용)
+대신 그 반대로 사용하기는 어려움
+
+Rollback Segment(중요)
+읽기일관성과 recovery를 위한
+rollback data가 저장되는 extents의 집합
+대량의 작업시 계속 커짐
+
+Temporary segment
+Create Index, Group by, Sort 등의 임시적인 Segment의 data가 저장되는 extents의 집합
+
+
+파티션
+테이블 공간을 물리적으로 쪼갠다
+단점
+파티션을 쪼갠만큼 이벤트가 발생
+(월별로 쪼개놨다고 가정할 시 
+한 고객의 1년치 구매내역을 볼시 
+내부적으로 I/O가 여러번 발생)
+
+INDEX 참고그림 ppt71
+
+인덱스는 키 , ROWID 로 구성
+데이터를 찾을때는 ROOT->BRANCH->leaf
+
+
+Index  ppt40
+적은 데이터를 읽을 때 인덱스를 사용해야 효율적이다.
+많은 데이터를 읽을 때는 테이블 자체를 읽는게 효율적이다.
+예( 1000개의 데이터가 있는 테이블일때
+1개, 10개 등의 소수의 데이터를 찾을땐 인덱스가 효율적,
+500개등 많은 데이터를 뽑을때는 안쓰는게 효율적
+
+Rollback은 세가지만 기억한다.
+읽기일관성 
+UPDATE시 롤백이 발생한다.
+
+
+TableSpace ppt 43
+datafile은 DBA가 관리
+Oracle database는 하나 혹은 하나이상의 논리적인 저장 단위인 tablespace로 구성된다
+각각의 tablespace는 하나 혹은 하나이상의 물리적인 datafile로 구성된다
+각각의 Segment는 반드시 하나의 tablespace에 저장되어야 한다
+각각의 Segment는 여러 datafile에 걸쳐 저장될 수 있다
+
+
+View ppt44
+
+Extent에 관한 view:dba_extents
+SEGMENT에 관한 view:dba_segments
+File에 관한 view:dba_data_files
+Tablespace에 관한 view:dba_tablespaces
+free_space에 관한 view:dba_free_space
+
+사용량을 계산할시  
+dba_data_files - dba_free_space
+
+Parameter File ppt 48
+ORACLE_HOME
+ Oracle DBMS의 home directory
+ ORACLE_SID
+ Oracle instance의 식별자
+Parameter file의 우선순위
+1. spfile$ORACLE_SID.ora
+2. spfile.ora(1번이 없을때)
+3. init$ORACLE_SID.ora(1,2번이 없을때)
+
+
+ppt 49
+ Parameter 정보 확인
+
+SQL> SHOW PARAMETERS ***
+SQL> select * from v$parameter;
+ Under bar parameter (히든 parameter)
+Oracle 내부적으로 사용(debug, test), 때때로 긴급한 경우 이용
+ex)  _tarce_file_public, _offline_rollback_segments  등
+
+히든 parameter
+DBA등 데이터베이스 기술자들이 사용함.
+
+
+Startup Shutdown(켜지는 과정) ppt50,ppt51
+
+shutdown -> nomount -> mount -> open
+
+Nomount
+database 생성이나 control file 생성시 사용
+parameter file ($ORACLE_HOME/dbs/initSID.ora 등)을 읽는다
+SGA 할당 및 Background process 실행
+Trace file과 Alert file을 연다
+
+Mount
+file structure 변경이나, modify control file 수정 및  recovery시 사용
+control file 연다
+mount database (Datafile, Redo log file)
+
+Open
+모든 user가 database를 사용 가능하도록 만든다
+datafile과 redo log file을 열고, rollback segment를 가져온다
+
+
+Shutdown ppt 52,53
+shutdown normal
+모든 유저가 connection이 종료하기를 기다린후 shutdown 실시
+
+shutdown transactional
+모든 active transaction 시 commit/rollback 된후 shutdown 실시
+
+shutdown immediate
+모든 uncommitted transaction 을 rollback 시킨후 shutdown 실시
+shutdown abort
+Abort current SQL statement 
+
+uncommitted transaction 은 rollback 되지 않는다
+다음 startup 시 instance recovery가 필요하다
+
+
+컨트롤 파일 ppt 54
+
+데이터베이스를 구성하는 파일중에 대장이다.
+가장중요하다.
+
+
+아카이브 모드ppt 59
+
+ARCHIVELOG mode 의 장점
+완벽한 recovery가 가능
+Online (hot) backup  이 가능
+필요에 따라 Tablespace를 즉각 offline 시킬 수 있다
+분산 recovery 가 가능
+
+ARCHIVELOG mode의 단점
+추가적인 disk space 필요
+추가적인 DBA 관리 필요
+
+NOARCHIVELOG mode의 귀결
+DBA는 마지막 offline backup 까지만 복구 시킬 수 있다
+전체  database 대한 백업만 가능
+offline backup만 가능
+Tablespace를 즉각 offline 시킬 수 없다
+DBA 작업은 줄어든다
+
+
+모든 운영db가 아카이브 운영 되는것은 아니지만,
+대부분은 아카이브 모드이고,
+아카이브나 아닐경우는 복구할 방안을 마련해 놓은 것
+
+
+Tablespace ppt 61
+table과 index의 구분
+
+Online and Offline & Read-Only	 ppt 62
+
+ppt 62
+oltp 작은 단위 의 트랜잭션이 많이 발생함.
+
+
+Tablespace 관리 – DMT 와 LMT ppt 64
+
+DMT(Dictionary-Managed Tablespaces)
+data dictionary 에서 Extent 관리
+
+LMT(Locally-Managed Tablespaces)
+Tablespace에서 Extent 관리
+Bitmap을 이용하여  free or used  상태 관리       
+동시에 공간 할당을 요구할 경우 더 빨리 처리하여 성능 향상
+
+
+UNIFORM SIZE
+동일한 사이즈로 
+
+Undo ppt67
+
+
+M view ppt 68
+summary table을 만드는 것보다 효율이 좋을 수도 있음
+세그먼트이다.
+Stored procedure, function, trigger, package, anonymous
+
+트리거나 프로시저는 정책에 따라 다르다.
+(쓰면 퍼포먼스는 올라가지만, 
+버그수정등 운영이 어려움)
+package 다형성,상호참조
+
+Sequence 순번
+Synonyms 동의어
+Database Links
+
+Table ppt 69
+index-organized Table - 제품회사가 많이 쓴다.
+
+Table을 바라보는 관점이 다르다
+(
+아이디를 기준으로 찾기도 한다
+날짜를 기준으로 찾기도 한다
+)
+
+자주 쓰는 기준으로 정렬하는 게 유리하다.
+ppt 70
+INDEX ppt 71
+
+리버스 키 인덱스
+bit map Index, B tree ppt72
+Trigger
+Synonym
+Sequence
+View
+Materialized View
+Dimension
+Database Link
+
+Dimension
+서울 -영등포구'
+같은 개념을 오라클에게 선언
+ 
+다음수업 ppt 76 쪽부터
+
+
+
+
+
+
+
