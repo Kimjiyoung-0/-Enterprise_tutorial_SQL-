@@ -203,7 +203,7 @@ select
     connect by level <= 12;
 ```
 
-![image](https://user-images.githubusercontent.com/71188378/126243265-fccda9dc-6a23-408e-bc38-8cbe7fea486c.png)
+![image](https://user-images.githubusercontent.com/71188378/126243265-fccda9dc-6a23-408e-bc38-8cbe7fea486c.png)<br>
 01부터 12까지 잘출력된다. 여기다 날짜 포멧을 붙이면<br>
 
 ```SQL
