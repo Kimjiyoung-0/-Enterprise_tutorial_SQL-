@@ -292,6 +292,20 @@ delete from emp_dup a
                     );
 
 ```
+```SQL
+delete from emp_dup
+where 
+rowid in (
+        select rowid 
+        from (
+                select * from (
+                        select row_number() over(partition by empno order by empno) as empnum
+                        from emp_dup
+                )
+                where empnum > 1 
+             )           
+);
+```
 ### 다음 열 지정
 만약 지금 열의 값부터 다음열의 값까지를 출력하고싶다면<br>
 lead() 함수 를 쓰면된다.<br>
