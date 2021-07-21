@@ -308,17 +308,18 @@ order by로 원하는 기준으로 정렬 시켜서 사용할 수 있다.<br>
 만약 다음열이 아닌 전열의 값이 필요하다면 똑같은 방식으로 LAG()함수를 쓴다.<br>
 
 ### 다음열 지정 응용
-아래와 같이 EMP Table을 참조하여 부서별,기간별 소속된 직원수를 구하는 SQL을 작성하시요
+아래와 같이 EMP Table을 참조하여 부서별,기간별 소속된 직원수를 구하는 SQL을 작성하시요<br>
 
 ![image](https://user-images.githubusercontent.com/71188378/126455692-25e970fa-866c-457e-8054-72258fba0b63.png)
-라는 과제가 있다고 치자
-먼저 테이블을 보면, deptno으로 기분을 잡아 count를 한다.
-허나, count도 start_date 즉, 한 사원이 입사하고 나서를 기준으로 잡아
-기간별로 카운트를 한다.
-즉, 카운트는 deptno,기간 이 두개의 기준으로 카운트가 된다.
+<br>
+라는 과제가 있다고 치자<br>
+먼저 테이블을 보면, deptno으로 기분을 잡아 count를 한다.<br>
+허나, count도 start_date 즉, 한 사원이 입사하고 나서를 기준으로 잡아<br>
+기간별로 카운트를 한다.<br>
+즉, 카운트는 deptno,기간 이 두개의 기준으로 카운트가 된다.<br>
 
-둘째로 END_date 는 다음 입사한 사람의 hiredate에서 하루를 뺀값이다.
-즉, lead함수를 응용해야한다.
+둘째로 END_date 는 다음 입사한 사람의 hiredate에서 하루를 뺀값이다.<br>
+즉, lead함수를 응용해야한다.<br>
 ```SQL
 select deptno, to_char( hiredate,'yyyy-mm-dd' ) as start_date,
 to_char(
