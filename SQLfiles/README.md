@@ -213,14 +213,11 @@ select
 
 ```SQL
     select 
-    to_char(sysdate,'yyyy/')||
-    to_char(lpad(level, 2, '0'))||
-    '/01' as saldate
+    to_char(add_months(trunc(sysdate,'yyyy'), level-1),'yyyy/mm/dd') as saldate
     from dual 
-    connect by level <= 12;
+    connect by level <= 12
  ```   
-    
-![image](https://user-images.githubusercontent.com/71188378/126243405-0d8cbadd-f9bb-4238-af29-afc1515419e7.png)
+
 
 1년의 12달이 잘출력된다.<br>
 
