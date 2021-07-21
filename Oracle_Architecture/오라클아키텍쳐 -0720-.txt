@@ -1,6 +1,3 @@
-ADMIN 
-
-
 Storage Structure Relationship ppt 32
 그림 참조
 피지컬 = OS관점
@@ -286,6 +283,16 @@ Undo ppt67
 
 
 M view ppt 68
+일반 뷰는 사용자가 뷰를 이용할 때 뷰의 담겨진 서브쿼리를 이용하여
+원래의 테이블에서 실제 데이터를 가져와 사용자에게 주고, 
+데이터를 view에서 삭제한다.
+그러나 Mview는 한 사용자가 Mview를 이용할 때 데이터를
+가져오고 사용자에게 반환하고 뷰에서 삭제하지 않는다.
+Mview가 한 번 사용되면 결과 데이터를 그대로 저장한다.
+그러므로, 다른사용자들은 Mview를 이용할 때 데이터를 버퍼 캐시에서 
+꺼내오는 것이 아니라 Mview내에 이미 만들어진 데이터를 가져가므로
+성능 향상을 기대할 수 있습니다.
+
 summary table을 만드는 것보다 효율이 좋을 수도 있음
 세그먼트이다.
 Stored procedure, function, trigger, package, anonymous
@@ -323,7 +330,7 @@ Dimension
 Database Link
 
 Dimension
-서울 -영등포구'
+서울 -영등포구-
 같은 개념을 오라클에게 선언
  
 다음수업 ppt 76 쪽부터
