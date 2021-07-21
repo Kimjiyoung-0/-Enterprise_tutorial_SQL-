@@ -307,5 +307,45 @@ from emp;
 order by로 원하는 기준으로 정렬 시켜서 사용할 수 있다.<br>
 만약 다음열이 아닌 전열의 값이 필요하다면 똑같은 방식으로 LAG()함수를 쓴다.<br>
 
+### 다음열 지정 응용
+아래와 같이 EMP Table을 참조하여 부서별,기간별 소속된 직원수를 구하는 SQL을 작성하시요
 
+![image](https://user-images.githubusercontent.com/71188378/126455692-25e970fa-866c-457e-8054-72258fba0b63.png)
+라는 과제가 있다고 치자
+먼저 테이블을 보면, deptno으로 기분을 잡아 count를 한다.
+허나, count도 start_date 즉, 한 사원이 입사하고 나서를 기준으로 잡아
+기간별로 카운트를 한다.
+즉, 카운트는 deptno,기간 이 두개의 기준으로 카운트가 된다.
 
+둘째로 END_date 는 다음 입사한 사람의 hiredate에서 하루를 뺀값이다.
+즉, lead함수를 응용해야한다.
+```SQL
+select deptno, to_char( hiredate,'yyyy-mm-dd' ) as start_date,
+to_char(
+        decode(
+                lead(hiredate) over(partition by deptno order by hiredate)
+                , null
+                , sysdate
+                ,lead(hiredate-1) over(partition by deptno order by hiredate)
+                )
+         ,'yyyy-mm-dd') as end_date,
+sum(cnt) over(partition by deptno order by hiredate) as "count(*)"
+from (
+        select ROW_NUMBER() OVER(PARTITION BY hiredate,deptno order by hiredate) as rnum
+        ,count(distinct hiredate) over(partition by deptno,hiredate) as cnt
+        , emp.*  
+        from emp
+        )a
+where rnum = 1;
+```
+먼저 deptno를 출력하고 , 그 다음 바로 hiredate를 형식에 맞게 출력한다.<br>
+
+그 다음은 END_Date ,END_DATE는 먼저 lead로 detpno으로 구분하고,hiredate로 정렬된 기준에서<br>
+다음 hiredate를 가져온다. 단, 가져올게 없으면 오늘 날짜가 들어간다.<br>
+가져올 데이터가 있으면 가져온 날짜 데이터에 하루를 뺀다 그리고나서<br>
+형식에 맞춰 출력한다. 이러면 END_DATE까지 끝났다.<br>
+허나 마지막 문제가 있다. 이 문제에서 중복값,<br>
+즉 deptno이 같으면서 hiredate가 같으면 중복으로 처리해 카운트 하지않는다.<br>
+이것을 해결하기 위해  중복된 값을 제거할 때 사용하는 <br>
+ROW_NUMBER()함수로 hiredate,deptno이 같으면 number가 올라가게 설계하고,<br>
+where절로  rnum이 1인 값만 나오게 함으로써, 중복인 값이 카운트 되지 않는다.<br>
