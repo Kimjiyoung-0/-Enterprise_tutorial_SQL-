@@ -278,4 +278,19 @@ emp 테이블을 그냥 출력했을때와 다른 결과(30컬럼)가 나온다.
 15개의 컬럼이 있는 emp 테이블에 <br>
 sum(sal) 값 단하나만이 추가되었다.<br>
 
+### 중복된 값제거
+만약 데이터를 인서트하다 완전이 똑같은 값이 들어갔을 때
+(pk 제약조건이 없다고 가정)
+어떻게 해야 중복된 값을 delete할 수 있을까?
+rowid를 사용하면된다.
+rowid는 그 칼럼의 고유한 아이디로써,
+칼럼마다 다른값을 지니고있다.
+```SQL
+delete from emp_dup a
+     where rowid > (
+                    select min(rowid) 
+                    from emp_dup b
+                    where b.empno = a.empno
+                    );
 
+```
