@@ -217,6 +217,7 @@ select
     from dual 
     connect by level <= 12
  ```   
+![image](https://user-images.githubusercontent.com/71188378/126439019-0700a844-a6c8-4380-b7e6-584e5a691fbb.png)
 
 
 1년의 12달이 잘출력된다.<br>
@@ -276,12 +277,12 @@ emp 테이블을 그냥 출력했을때와 다른 결과(30컬럼)가 나온다.
 sum(sal) 값 단하나만이 추가되었다.<br>
 
 ### 중복된 값제거
-만약 데이터를 인서트하다 완전이 똑같은 값이 들어갔을 때
-(pk 제약조건이 없다고 가정)
-어떻게 해야 중복된 값을 delete할 수 있을까?
-rowid를 사용하면된다.
-rowid는 그 칼럼의 고유한 아이디로써,
-칼럼마다 다른값을 지니고있다.
+만약 데이터를 인서트하다 완전이 똑같은 값이 들어갔을 때<br>
+(pk 제약조건이 없다고 가정)<br>
+어떻게 해야 중복된 값을 delete할 수 있을까?<br>
+rowid를 사용하면된다.<br>
+rowid는 그 칼럼의 고유한 아이디로써,<br>
+칼럼마다 다른값을 지니고있다.<br>
 ```SQL
 delete from emp_dup a
      where rowid > (
@@ -292,19 +293,19 @@ delete from emp_dup a
 
 ```
 ### 다음 열 지정
-만약 지금 열의 값부터 다음열의 값까지를 출력하고싶다면
-lead() 함수 를 쓰면된다.
-예를 들어 , 'emp 테이블에서 한 열의 hiredate와 그 다음열의 hireadte를
-출력하고 싶다.' 
-라고한다면 
+만약 지금 열의 값부터 다음열의 값까지를 출력하고싶다면<br>
+lead() 함수 를 쓰면된다.<br>
+예를 들어 , 'emp 테이블에서 한 열의 hiredate와 그 다음열의 hireadte를<br>
+출력하고 싶다.'<br> 
+라고한다면<br> 
 ```SQL
 select hiredate,lead(hiredate) over(order by hiredate)
 from emp;
 ```
-이렇게 쓸수 있을것이다.
-이 함수는 partition by로 원하는 기준으로 group by 할 수 있고,
-order by로 원하는 기준으로 정렬 시켜서 사용할 수 있다.
-만약 다음열이 아닌 전열의 값이 필요하다면 똑같은 방식으로 LAG()함수를 쓴다.
+이렇게 쓸수 있을것이다.<br>
+이 함수는 partition by로 원하는 기준으로 group by 할 수 있고,<br>
+order by로 원하는 기준으로 정렬 시켜서 사용할 수 있다.<br>
+만약 다음열이 아닌 전열의 값이 필요하다면 똑같은 방식으로 LAG()함수를 쓴다.<br>
 
 
 
