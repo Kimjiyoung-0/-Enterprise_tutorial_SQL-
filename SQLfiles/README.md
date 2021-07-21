@@ -294,3 +294,20 @@ delete from emp_dup a
                     );
 
 ```
+### 다음 열 지정
+만약 지금 열의 값부터 다음열의 값까지를 출력하고싶다면
+lead() 함수 를 쓰면된다.
+예를 들어 , 'emp 테이블에서 한 열의 hiredate와 그 다음열의 hireadte를
+출력하고 싶다.' 
+라고한다면 
+```SQL
+select hiredate,lead(hiredate) over(order by hiredate)
+from emp;
+```
+이렇게 쓸수 있을것이다.
+이 함수는 partition by로 원하는 기준으로 group by 할 수 있고,
+order by로 원하는 기준으로 정렬 시켜서 사용할 수 있다.
+만약 다음열이 아닌 전열의 값이 필요하다면 똑같은 방식으로 LAG()함수를 쓴다.
+
+
+
