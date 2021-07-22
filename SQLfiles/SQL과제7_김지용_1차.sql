@@ -124,24 +124,14 @@ create table repay_test
 insert into repay_test values ('20190103','홍길동','1234567-1234567',1500000);
 insert into repay_test values ('20190906','홍길동','1234567-1234567',1000000);  
 insert into repay_test values ('20190909','홍길동','1234567-1234567', 500000);
+insert into repay_test values ('20190306','고길동','1234567-1234567', 700000);
+insert into repay_test values ('20190507','고길동','1234567-1234567', 400000);
+insert into repay_test values ('20190809','고길동','1234567-1234567', 200000);
 commit;
 select * from repay_test;
 
 
 /**/
-select to_date('20190101','yyyymmdd') +level
-from dual
-connect by level <365;
-
-select  decode(lag(repay_date) over(order by repay_date),null,'20190101',lag(repay_date) over(order by repay_date)) as before_date
-        ,repay_date
-        ,decode(lead(repay_date) over(order by repay_date),null,'20191231',lead(repay_date) over(order by repay_date))as after_date
-        ,detr_nm,rbno,loan_bal_amt
-from repay_test re;
-
-
-
-
 select distinct today as tot_date ,REPAY_DATE,DETR_NM,RBNO,
 case when today < to_date(REPAY_DATE,'yyyymmdd') then 0
      when today >= to_date(REPAY_DATE,'yyyymmdd')  then LOAN_BAL_AMT 
@@ -159,20 +149,21 @@ natural join
     (
     select  
     decode(
-        lag(repay_date) over(order by repay_date)
+        lag(repay_date) over(partition by detr_nm order by repay_date)
         ,null
         ,SUBSTR(repay_date, 1, 4)||'0101'
-        ,lag(repay_date) over(order by repay_date)
+        ,lag(repay_date) over(partition by detr_nm order by repay_date)
     ) as before_date
     ,repay_date
     ,decode(
-        lead(repay_date-1) over(order by repay_date)
+        lead(repay_date-1) over(partition by detr_nm order by repay_date)
         ,null
         ,SUBSTR(repay_date, 1, 4)||'1231'
-        ,lead(repay_date-1) over(order by repay_date)
+        ,lead(repay_date-1) over(partition by detr_nm order by repay_date)
      )as after_date
     ,detr_nm,rbno, LOAN_BAL_AMT
     from repay_test
+    order by detr_nm
     )re 
 where
     (
@@ -187,18 +178,7 @@ where
     and to_date(repay_date,'yyyymmdd')
     and before_date = '20190101'
     )
-order by today;
+order by DETR_NM,today;
 
-
-
-
-select to_date(SUBSTR(repay_date, 1, 4)||'0101','yyyymmdd') +level-1 as today
-    from repay_test
-    connect by level < to_date(SUBSTR(repay_date, 1, 4)||'1231','yyyymmdd') -to_date(SUBSTR(repay_date, 1, 4)||'0101','yyyymmdd');
-    
-    
-  select  to_date(SUBSTR(max(repay_date), 1, 4)||'1231','yyyymmdd')
-  from repay_test;
- 
 
 
