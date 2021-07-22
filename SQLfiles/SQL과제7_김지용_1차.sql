@@ -142,17 +142,18 @@ from repay_test re;
 
 
 
-
-
 select distinct today as tot_date ,REPAY_DATE,DETR_NM,RBNO,
 case when today < to_date(REPAY_DATE,'yyyymmdd') then 0
      when today >= to_date(REPAY_DATE,'yyyymmdd')  then LOAN_BAL_AMT 
-     end as LOAN_BAL_AMT    
+     end as LOAN_BAL_AMT       
 from 
     (
-    select to_date('20190101','yyyymmdd') +level-1 as today
-    from dual
-    connect by level <(to_date('20191231','yyyymmdd')+1) -(to_date('20190101','yyyymmdd')-1)
+    select to_date(thisyear||'0101','yyyymmdd') +level-1 as today
+    from   (
+            select  SUBSTR(max(repay_date), 1, 4)as thisyear
+            from repay_test
+            )
+    connect by level <(to_date(thisyear||'1231','yyyymmdd')+1) -(to_date(thisyear||'0101','yyyymmdd')-1)
     )
 natural join
     (
@@ -160,14 +161,14 @@ natural join
     decode(
         lag(repay_date) over(order by repay_date)
         ,null
-        ,'20190101'
+        ,SUBSTR(repay_date, 1, 4)||'0101'
         ,lag(repay_date) over(order by repay_date)
     ) as before_date
     ,repay_date
     ,decode(
         lead(repay_date-1) over(order by repay_date)
         ,null
-        ,'20191231'
+        ,SUBSTR(repay_date, 1, 4)||'1231'
         ,lead(repay_date-1) over(order by repay_date)
      )as after_date
     ,detr_nm,rbno, LOAN_BAL_AMT
@@ -187,6 +188,17 @@ where
     and before_date = '20190101'
     )
 order by today;
+
+
+
+
+select to_date(SUBSTR(repay_date, 1, 4)||'0101','yyyymmdd') +level-1 as today
+    from repay_test
+    connect by level < to_date(SUBSTR(repay_date, 1, 4)||'1231','yyyymmdd') -to_date(SUBSTR(repay_date, 1, 4)||'0101','yyyymmdd');
+    
+    
+  select  to_date(SUBSTR(max(repay_date), 1, 4)||'1231','yyyymmdd')
+  from repay_test;
  
 
 
