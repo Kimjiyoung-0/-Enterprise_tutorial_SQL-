@@ -1,0 +1,4 @@
+ORACLE_HOME:
+ORACLE_BASE:
+리스너
+tnsnames.ora
