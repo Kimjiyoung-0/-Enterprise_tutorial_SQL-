@@ -1,0 +1,59 @@
+ORACLE_HOME: 오라클 클라이언트 프로그램이 설치되어 있는 경로
+ORACLE_BASE:
+
+          - OFA(Optimal Flexible Architecture)를 위한 오라클  기본 디렉토리 구조
+
+          - 이 경로 밑으로 오라클 프로그램을 설치
+
+          - controll file, redo log file, data file 이 있는 곳. (다른 files은 저장되지 않는다)
+
+.bash_profile
+:오라클의 설정값 
+오라클을 설치 할때 설정하는 값이다.
+예)
+export PATH
+
+export TMP=/tmp
+export TMPDIR=$TMP export ORACLE_OWNER=oracle
+export ORACLE_BASE=/app/oracle
+export ORACLE_HOME=/app/oracle/19c
+export PATH=$ORACLE_HOME/bin:$ORACLE_HOME:/usr/bin:$PATH
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$ORACLE_HOME/lib:/lib:/usr/lib
+export ORACLE_SID=DB19
+export NLS_LANG=AMERICAN_AMERICA.KO16MSWIN949
+export ORACLE_TERM=xterm
+export TNS_ADMIN=$ORACLE_HOME/network/admin
+export CLASSPATH=$ORACLE_HOME/JRE:$ORACLE_HOME/jlib:$ORACLE_HOME/rdbms/jlib
+export EDITOR=vi
+
+리스너
+:
+오라클 리스너는 네트워크를 이용하여 클라이언트에서 오라클 서버로 
+연결하기 위한 오라클 네트워크 관리자 입니다. 네트워크를 통한 연결은 
+모두 리스너가 담당하며 리스너와 연결되기 위해서는 클라이언트에 
+오라클 클라이언트가 설치되어 있고 이를 통해 오라클 서비스명이라는 것을
+만들어 접속을 해야 합니다.
+서버 - listener.ora  // 클라이언트 - tnsnames.ora  을 설정.
+
+listener.ora
+:
+오라클 서버에서 클라이언트의 요청을 듣고, 클라이언트와의 
+통신 환경을 설정하는 파일. 오라클 클라이언트에서 서버로 
+접속할 때 플요한 프로토콜(주로TCP/IP) 및 포트 등을 설정
+tnsnames.ora
+:클라이언트에서 서버로 접속할 때 필요한 프로토콜,
+ 포트, 서버주소, 인스턴트등을 설정함. 클라이언트에 위치
+
+lsnrctl 명령어
+리스너 시작 : start
+
+리스너 중단 : stop
+
+리스너 재시작 : reload
+
+리스너 상태보기 : status
+
+리스너 명령어보기 : help
+
+
+ 
