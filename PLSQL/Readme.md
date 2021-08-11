@@ -149,4 +149,23 @@ end;
 
 - 기타 일반적인 DATABASE 정보<br>
 
-SELECT * FROM DICTIONARY;
+SELECT * FROM DICTIONARY;<br>
+### Data Dictionary의 명명규칙<br>
+오라클에서는 Dictionary의 이름을 붙이는데는 나름대로의 규칙이 있다. <br>
+대체로 이름만 봐도 '이런 정보를 담고 있구나!'고 유추해볼 수 있다. 다음은 대표적인 Dictionary의 명명 규칙들이다.<br>
+
+#### USER_XXX<br>
+- 사용자가 사용하고 있는 Object와 관련된 정보.<br>
+ex)USER_ADDM_FDG_BREAKDOWN, USER_ADDM_FINDINGS, USER_ADDM_INSTANCES, ...<br>
+
+#### ALL_XXX<br>
+-현재 사용자가 접근이 가능한 Object에 관련된 정보.<br>
+ex)ALL_ALL_TABLES, ALL_APPLY, ALL_APPLY_CHANGE_HANDLERS, ...<br>
+
+#### DBA_XXX<br>
+- DBA 권한을 가지고 있는 사용자만이 접근할 수 있는 정보.<br>
+ex) DBA_OBJECTS, DBA_INDEXES, DBA_TABLES, ...<br>
+
+#### V$_XXX<br>
+- 서버의 성능이나 시스템관련 정보, 메모리, Lock 등에 관한 정보.<br>
+ex )V$ACTIVE_INSTANCES, V$ACTIVE_SESS_POOL_MTH, V$ADVISOR_CURRENT_SQLPLAN, ...<br>
