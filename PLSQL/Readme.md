@@ -159,7 +159,7 @@ SELECT * FROM DICTIONARY;<br>
 ex)USER_ADDM_FDG_BREAKDOWN, USER_ADDM_FINDINGS, USER_ADDM_INSTANCES, ...<br>
 
 #### ALL_XXX<br>
--현재 사용자가 접근이 가능한 Object에 관련된 정보.<br>
+- 현재 사용자가 접근이 가능한 Object에 관련된 정보.<br>
 ex)ALL_ALL_TABLES, ALL_APPLY, ALL_APPLY_CHANGE_HANDLERS, ...<br>
 
 #### DBA_XXX<br>
