@@ -126,3 +126,7 @@ begin
     commit;   
 end;
 ```
+## all_ind_columns Dictionary , all_tab_columns Dictionary
+column 에대한 정보를 담고있다.<br>
+all_ind_columns 은 인덱스에 관한 정보를,<br>
+all_tab_columns Dictionary은 table에 관련된 정보를 담고있다.<br>
