@@ -126,7 +126,27 @@ begin
     commit;   
 end;
 ```
-## all_ind_columns Dictionary , all_tab_columns Dictionary
-column 에대한 정보를 담고있다.<br>
-all_ind_columns 은 인덱스에 관한 정보를,<br>
-all_tab_columns Dictionary은 table에 관련된 정보를 담고있다.<br>
+##  Data Dictionary
+- 데이터 사전(Data Dictionary)이란 대부분 읽기전용으로 제공되는 <br>
+- 테이블 및 뷰들의 집합으로 데이터베이스 전반에 대한 정보를 제공 한다.<br>
+- 오라클 데이터베이스는 명령이 실행 될 때 마다 데이터 사전을 Access 한다.<br>
+
+###데이터 사전에 저장되는 내용은 아래와 같다.
+
+ 
+
+- 오라클의 사용자 정보<br>
+
+- 오라클 권한과 롤 정보<br>
+
+- 데이터베이스 스키마 객체(TABLE, VIEW, INDEX, CLUSTER, SYNONYM, SEQUENCE..) 정보<br>
+
+- 무결성 제약조건에 관한 정보<br>
+
+- 데이터베이스의 구조 정보<br>
+
+- 오라클 데이터베이스의 함수 와 프로지저 및 트리거에 대한 정보<br>
+
+- 기타 일반적인 DATABASE 정보<br>
+
+SELECT * FROM DICTIONARY;
