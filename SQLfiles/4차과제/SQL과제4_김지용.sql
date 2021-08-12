@@ -1,9 +1,9 @@
 /*
-1. ¾Æ·¡¿Í °°ÀÌ EMP TableÀ» »ç¿ëÇÏ¿© ºÎ¼­º° 
-MAX SAL,MIN SAL,AVG SAL(¼Ò¼öÁ¡ Àý»è),°Ç¼ö 
-±×¸®°í ÀüÃ¼ MAX SAL,MIN SAL,AVG SAL(¼Ò¼öÁ¡ Àý»è),°Ç¼ö¸¦ ±¸ÇÏ½Ã¿ä.
+1. ì•„ëž˜ì™€ ê°™ì´ EMP Tableì„ ì‚¬ìš©í•˜ì—¬ ë¶€ì„œë³„ 
+MAX SAL,MIN SAL,AVG SAL(ì†Œìˆ˜ì  ì ˆì‚­),ê±´ìˆ˜ 
+ê·¸ë¦¬ê³  ì „ì²´ MAX SAL,MIN SAL,AVG SAL(ì†Œìˆ˜ì  ì ˆì‚­),ê±´ìˆ˜ë¥¼ êµ¬í•˜ì‹œìš”.
 
-( 1°³´Â Inline View¸¦ ÅëÇØ ÀÛ¼ºÇÏ°í 1°³´Â Analytic FunctionÀ» »ç¿ëÇÏ¿© EMP Table ÇÑ¹ø¸¸ Á¶È¸ÇÏµµ·Ï ÀÛ¼º)
+( 1ê°œëŠ” Inline Viewë¥¼ í†µí•´ ìž‘ì„±í•˜ê³  1ê°œëŠ” Analytic Functionì„ ì‚¬ìš©í•˜ì—¬ EMP Table í•œë²ˆë§Œ ì¡°íšŒí•˜ë„ë¡ ìž‘ì„±)
 
 */
 
@@ -27,7 +27,7 @@ FROM(select max(sal) as MAX_SAL,
             , emp b
 where b.deptno= a.deptno;
 
-/*Á¤·ÄÇÔ¼ö*/
+/*ì •ë ¬í•¨ìˆ˜*/
 SELECT a.empno,a.ename,a.deptno,a.sal
 MAX_DEPT_SAL, MIN_DEPT_SAL,AVG_DEPT_SAL,COUNT_DEPT,
 MAX_SAL,MIN_SAL,AVG_SAL,COUNT_ALL
@@ -48,9 +48,9 @@ FROM EMP e)a;
 
 /*
 
-2. ¾Æ·¡¿Í °°ÀÌ EMP TableÀ» »ç¿ëÇÏ¿© ºÎ¼­º° 
-SAL,HIREDATE ¼ø Numbering, ´©Àû 
-SALÀ» Analytic FunctionÀ» »ç¿ëÇÏ¿© ±¸ÇÏ½Ã¿ä. 
+2. ì•„ëž˜ì™€ ê°™ì´ EMP Tableì„ ì‚¬ìš©í•˜ì—¬ ë¶€ì„œë³„ 
+SAL,HIREDATE ìˆœ Numbering, ëˆ„ì  
+SALì„ Analytic Functionì„ ì‚¬ìš©í•˜ì—¬ êµ¬í•˜ì‹œìš”. 
 */
 SELECT empno,ename,DEPTNO,SAL,hiredate,NUM_sal,CUMM_SAL
 from
@@ -63,8 +63,8 @@ FROM EMP e)
 
 
 /*
-3. ¾Æ·¡¿Í °°ÀÌ 2¹ø SQLÀ» ÂüÁ¶ÇÏ¿© ºÎ¼­º°·Î 
-SAL,HIREDATE ¼øÀ¸·Î ENAMEÀ» ³ª¿­ÇÏ´Â SQLÀ» ÀÛ¼ºÇÏ½Ã¿ä.
+3. ì•„ëž˜ì™€ ê°™ì´ 2ë²ˆ SQLì„ ì°¸ì¡°í•˜ì—¬ ë¶€ì„œë³„ë¡œ 
+SAL,HIREDATE ìˆœìœ¼ë¡œ ENAMEì„ ë‚˜ì—´í•˜ëŠ” SQLì„ ìž‘ì„±í•˜ì‹œìš”.
 
 */
 
