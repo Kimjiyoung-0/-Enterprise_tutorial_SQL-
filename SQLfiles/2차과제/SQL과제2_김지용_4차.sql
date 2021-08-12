@@ -10,9 +10,7 @@ from
 (select e.*,round(avg(sal) over(partition by deptno)) avg_SAL FROM EMP e)
 where sal > avg_sal
 order by abs(avg_sal) desc;
-/*
-=> trunc(a.avg_sal) 가 소수점 반올림 맞나?
-*/
+
 
 
 /*
@@ -21,14 +19,12 @@ order by abs(avg_sal) desc;
 급여 높은 순으로 조회되도록 하는 SQL을 작성하시요.
 */
 
+
 SELECT DEPTNO,empno,SAL,
 case when sal < avg_sal then sal*1.1 else sal end as TOTAL_SAL
 from
 (select e.*,round(avg(sal) over(partition by deptno)) avg_SAL FROM EMP e)
 order by abs(sal) desc;
 
-/*
- ==> Join 조건이 없슴
-*/
 
 
