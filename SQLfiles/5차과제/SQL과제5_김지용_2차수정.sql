@@ -14,6 +14,20 @@ from
 cross join 
     (
     select rownum gunbun, emp.*
+    from emp
+    ) e
+order by gunbun;
+
+select e.*
+from 
+    (
+    select level
+    from dual 
+    connect by level <= 2
+    )  
+cross join 
+    (
+    select rownum gunbun, emp.*
     from 
         (
         select *
@@ -21,17 +35,33 @@ cross join
         order by empno
         )emp
     ) e
-order by gunbun,empno  ;
+order by gunbun;
 
 ==> Analytic Function 사용하지 말 것.;
 
 /*union*/
-select rownum gunbun,emp.*
+select rownum gunbun, emp.*
 from emp
 union all
-select rownum gunbun,emp.*
+select rownum gunbun, emp.*
 from emp
 order by gunbun;
+
+select rownum gunbun, emp.*
+from(
+        select *
+        from emp 
+        order by empno
+        )emp
+union all
+select rownum gunbun, emp.*
+from(
+        select *
+        from emp 
+        order by empno
+        )emp
+order by gunbun;
+
 
 ==> Analytic Function 사용하지 말 것.;
 /*
@@ -106,5 +136,5 @@ natural join
     (
     select to_char(ADD_MONTHS(TRUNC(sysdate,'yyyy'), level-1),'yyyy/mm/dd') as saldate
     from dual 
-    connect by level <= 12
+    connect by level <= 12 
     );
