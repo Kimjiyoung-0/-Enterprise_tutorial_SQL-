@@ -13,20 +13,27 @@ from
     )  
 cross join 
     (
-    select rank() over (order by empno) gunbun, emp.*
+    select rownum gunbun, emp.*
     from 
-    emp 
+        (
+        select *
+        from emp 
+        order by empno
+        )emp
     ) e
 order by gunbun,empno  ;
 
+==> Analytic Function 사용하지 말 것.;
+
 /*union*/
-select rank() over (order by empno) gunbun,emp.*
+select rownum gunbun,emp.*
 from emp
 union all
-select rank() over (order by empno)gunbun,emp.*
+select rownum gunbun,emp.*
 from emp
 order by gunbun;
 
+==> Analytic Function 사용하지 말 것.;
 /*
 2. 아래와 같이 emp table의 
 각 로우가 2번씩 조회되도록 하되 
@@ -74,22 +81,13 @@ from emp
 natural join
     (
     select 
-    to_char(sysdate,'yyyy/')||
-    to_char(lpad(level, 2, '0'))||
-    '/01' as saldate
+    TO_CHAR(ADD_MONTHS(TRUNC(sysdate,'yyyy'), level-1),'yyyy/mm/dd') as saldate
     from dual 
     connect by level <= 12
     );
     
-    
- /*
-    select 
-    to_char(sysdate,'yyyy/')||
-    to_char(lpad(level, 2, '0'))||
-    '/01' as saldate
-    from dual 
-    connect by level <= 12;
-*/
+  ==>    to_char(sysdate,'yyyy/')|| to_char(lpad(level, 2, '0'))||'/01' as saldate 부분 date 형을 그대로 두고 다시 작성할 것.;
+
 /*
 4. 3번 답을 사용하여 아래와 
 같이 월별 sal sum이 나오도록 하여 
@@ -106,9 +104,7 @@ from (
     )
 natural join
     (
-    select to_char(sysdate,'yyyy/')||
-    to_char(lpad(level, 2, '0'))||
-    '/01' as saldate
+    select to_char(ADD_MONTHS(TRUNC(sysdate,'yyyy'), level-1),'yyyy/mm/dd') as saldate
     from dual 
     connect by level <= 12
     );
