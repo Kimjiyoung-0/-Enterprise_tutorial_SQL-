@@ -1,6 +1,6 @@
 /*
-1. ¾Æ·¡¿Í °°ÀÌ °¢ empno ´ç 2°³¾¿ row°¡ »ı¼ºµÇµµ·Ï ¸¸µç ÈÄ °¢ empno ´ç 1°Ç¸¸ ³²±â°í »èÁ¦½ÃÅ°´Â ¹®À» ÀÛ¼ºÇÏ½Ã¿ä.  
-(ÃÖ¼Ò 2°³ ÀÌ»ó);
+1. ì•„ë˜ì™€ ê°™ì´ ê° empno ë‹¹ 2ê°œì”© rowê°€ ìƒì„±ë˜ë„ë¡ ë§Œë“  í›„ ê° empno ë‹¹ 1ê±´ë§Œ ë‚¨ê¸°ê³  ì‚­ì œì‹œí‚¤ëŠ” ë¬¸ì„ ì‘ì„±í•˜ì‹œìš”.  
+(ìµœì†Œ 2ê°œ ì´ìƒ);
 
 create table emp_dup
 as
@@ -11,8 +11,8 @@ from emp a,
 select rownum,emp_dup.* from emp_dup;
 select * from emp;
 rollback;
-/*1.1¹ø ¹æ¹ı °¢ ÄÃ·³ÀÇ °íÀ¯ idÀÎ rowid¸¦ »ç¿ë
-³ªÁß¿¡ µé¾î¿Â µ¥ÀÌÅÍ¸¦ »èÁ¦*/
+/*1.1ë²ˆ ë°©ë²• ê° ì»¬ëŸ¼ì˜ ê³ ìœ  idì¸ rowidë¥¼ ì‚¬ìš©
+ë‚˜ì¤‘ì— ë“¤ì–´ì˜¨ ë°ì´í„°ë¥¼ ì‚­ì œ*/
 delete from emp_dup a
      where rowid > (
                     select min(rowid) 
@@ -21,7 +21,7 @@ delete from emp_dup a
                     );
                     
                     
-/*1.2¹ø rownumber() ¸¦ »ç¿ëÇÏ¿© °ªÀ» ºÎ¿©ÇÏ¿© delete*/
+/*1.2ë²ˆ rownumber() ë¥¼ ì‚¬ìš©í•˜ì—¬ ê°’ì„ ë¶€ì—¬í•˜ì—¬ delete*/
 delete from emp_dup
 where 
 rowid in (
@@ -36,7 +36,7 @@ rowid in (
 );
 
 /*
-2. ¾Æ·¡¿Í °°ÀÌ sal_hist tableÀ» »ı¼ºÇÑ ÈÄ  ¾Æ·¡¿Í °°ÀÌ ±â°£ÀÌ Á¶È¸µÇµµ·Ï ÇÏ½Ã¿ä. ;
+2. ì•„ë˜ì™€ ê°™ì´ sal_hist tableì„ ìƒì„±í•œ í›„  ì•„ë˜ì™€ ê°™ì´ ê¸°ê°„ì´ ì¡°íšŒë˜ë„ë¡ í•˜ì‹œìš”. ;
  
 create table sal_hist 
 (
@@ -53,7 +53,7 @@ insert into sal_hist values (3,'201710',1900);
 insert into sal_hist values (3,'201901',1700);
 commit;
 */
-/*Å×ÀÌºí¿¡ end_yymm ÄÃ·³Ãß°¡*/
+/*í…Œì´ë¸”ì— end_yymm ì»¬ëŸ¼ì¶”ê°€*/
 select empno, start_yymm,
 decode(
         to_char(add_months(to_date(lead(start_yymm) over(partition by empno order by empno ),'yyyymm'),-1),'yyyymm')
@@ -66,7 +66,7 @@ from sal_hist
 order by empno;
 
 /*
-3. ¾Æ·¡¿Í °°ÀÌ emp tableÀ» ÂüÁ¶ÇÏ¿© ºÎ¼­º°,±â°£º° ¼Ò¼ÓµÈ Á÷¿ø¼ö¸¦ ±¸ÇÏ´Â sqlÀ» ÀÛ¼ºÇÏ½Ã¿ä.
+3. ì•„ë˜ì™€ ê°™ì´ emp tableì„ ì°¸ì¡°í•˜ì—¬ ë¶€ì„œë³„,ê¸°ê°„ë³„ ì†Œì†ëœ ì§ì›ìˆ˜ë¥¼ êµ¬í•˜ëŠ” sqlì„ ì‘ì„±í•˜ì‹œìš”.
 */
 select deptno,to_char(hiredate,'yyyy-mm-dd' ) as start_date,
 to_char(
