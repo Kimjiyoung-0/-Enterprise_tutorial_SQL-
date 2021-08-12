@@ -1,6 +1,6 @@
 /*
-1. ¾Æ·¡¿Í °°ÀÌ emp tableÀÇ °¢ ·Î¿ì°¡ 2¹ø¾¿ Á¶È¸µÇµµ·Ï ÇÏµÇ gubun ÄÃ·³À» µÎ¾î empno ÄÃ·³°ªÀ» ±¸ºÐÇÏµµ·Ï ÇÑ´Ù. ÃÑ 28°Ç Á¶È¸µÇ¸ç ¼ø¼­´Â empno ÄÃ·³¼øÀ¸·Î Á¶È¸µÇµµ·Ï ÇÔ. 
-(joinÀ¸·Î 1°³,compound operator »ç¿ëÇÏ¿© 1°³)
+1. ì•„ëž˜ì™€ ê°™ì´ emp tableì˜ ê° ë¡œìš°ê°€ 2ë²ˆì”© ì¡°íšŒë˜ë„ë¡ í•˜ë˜ gubun ì»¬ëŸ¼ì„ ë‘ì–´ empno ì»¬ëŸ¼ê°’ì„ êµ¬ë¶„í•˜ë„ë¡ í•œë‹¤. ì´ 28ê±´ ì¡°íšŒë˜ë©° ìˆœì„œëŠ” empno ì»¬ëŸ¼ìˆœìœ¼ë¡œ ì¡°íšŒë˜ë„ë¡ í•¨. 
+(joinìœ¼ë¡œ 1ê°œ,compound operator ì‚¬ìš©í•˜ì—¬ 1ê°œ)
 */
 /*join*/
 
@@ -28,10 +28,10 @@ from emp
 order by gunbun;
 
 /*
-2. ¾Æ·¡¿Í °°ÀÌ emp tableÀÇ 
-°¢ ·Î¿ì°¡ 2¹ø¾¿ Á¶È¸µÇµµ·Ï ÇÏµÇ 
-gubun ÄÃ·³À» µÎ¾î Ã¹¹øÂ° ·Î¿ì¿Í µÎ¹øÂ° 
-·Î¿ì¸¦ ±¸ºÐÇÏ´Â ÄÃ·³À» µÐ´Ù. ÃÑ 28°Ç Á¶È¸µÇ¸ç ¼ø¼­´Â empno ¿Í gubun ÄÃ·³¼øÀ¸·Î Á¶È¸µÇµµ·Ï ÇÔ. 
+2. ì•„ëž˜ì™€ ê°™ì´ emp tableì˜ 
+ê° ë¡œìš°ê°€ 2ë²ˆì”© ì¡°íšŒë˜ë„ë¡ í•˜ë˜ 
+gubun ì»¬ëŸ¼ì„ ë‘ì–´ ì²«ë²ˆì§¸ ë¡œìš°ì™€ ë‘ë²ˆì§¸ 
+ë¡œìš°ë¥¼ êµ¬ë¶„í•˜ëŠ” ì»¬ëŸ¼ì„ ë‘”ë‹¤. ì´ 28ê±´ ì¡°íšŒë˜ë©° ìˆœì„œëŠ” empno ì™€ gubun ì»¬ëŸ¼ìˆœìœ¼ë¡œ ì¡°íšŒë˜ë„ë¡ í•¨. 
 */
 /*union*/
 select *
@@ -64,9 +64,9 @@ natural join
 order by empno, gunbun;
 
 /*
-3. ¾Æ·¡¿Í °°ÀÌ emp tableÀ» ÂüÁ¶ÇÏ¿© 
-±Ý³â ¸Å¿ù 1ÀÏ¿¡ ÇØ´çÇÏ´Â  sal_date ÄÃ·³ÀÌ
-Á¶È¸µÇµµ·Ï ÇÏ¿© 2020³âµµ ¿ùº° ÃÑ 14*12 °ÇÀÌ Á¶È¸µÇµµ·Ï ÇÔ. 
+3. ì•„ëž˜ì™€ ê°™ì´ emp tableì„ ì°¸ì¡°í•˜ì—¬ 
+ê¸ˆë…„ ë§¤ì›” 1ì¼ì— í•´ë‹¹í•˜ëŠ”  sal_date ì»¬ëŸ¼ì´
+ì¡°íšŒë˜ë„ë¡ í•˜ì—¬ 2020ë…„ë„ ì›”ë³„ ì´ 14*12 ê±´ì´ ì¡°íšŒë˜ë„ë¡ í•¨. 
 */
 
 select empno,ename,job,hiredate,saldate,sal
@@ -90,10 +90,10 @@ natural join
     connect by level <= 12;
 */
 /*
-4. 3¹ø ´äÀ» »ç¿ëÇÏ¿© ¾Æ·¡¿Í 
-°°ÀÌ ¿ùº° sal sumÀÌ ³ª¿Àµµ·Ï ÇÏ¿© 
-ÃÑ 14*12 °ÇÀÌ Á¶È¸µÇµµ·Ï ÇÔ. 
-rollup »ç¿ëÇÏÁö ¸»°Í..
+4. 3ë²ˆ ë‹µì„ ì‚¬ìš©í•˜ì—¬ ì•„ëž˜ì™€ 
+ê°™ì´ ì›”ë³„ sal sumì´ ë‚˜ì˜¤ë„ë¡ í•˜ì—¬ 
+ì´ 14*12 ê±´ì´ ì¡°íšŒë˜ë„ë¡ í•¨. 
+rollup ì‚¬ìš©í•˜ì§€ ë§ê²ƒ..
 */
 select empno,ename,job,saldate,sal
 from ( 
