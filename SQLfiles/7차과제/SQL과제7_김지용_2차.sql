@@ -1,5 +1,5 @@
 /*
-1. ¾Æ·¡¿Í °°ÀÌ Table »ı¼º,Data¸¦ ÀÔ·ÂÇÑ ÈÄ Áú¹®¿¡ ´ëÇÑ SQLÀ» ÃÖ¼Ò °¢°¢ 3°³¾¿ ÀÛ¼ºÇÏ½Ã¿ä!!!!
+1. ì•„ë˜ì™€ ê°™ì´ Table ìƒì„±,Dataë¥¼ ì…ë ¥í•œ í›„ ì§ˆë¬¸ì— ëŒ€í•œ SQLì„ ìµœì†Œ ê°ê° 3ê°œì”© ì‘ì„±í•˜ì‹œìš”!!!!
 */
 
 drop table cust_status;
@@ -8,25 +8,25 @@ create table cust_status
   cust_id_seq  number       not null,
   status       varchar2(10) not null)
  ;
-insert into cust_status values ('A',1,'Á¤»ó');
-insert into cust_status values ('A',2,'À§Çè');
-insert into cust_status values ('B',1,'Á¤»ó');
-insert into cust_status values ('B',2,'Á¤»ó');
-insert into cust_status values ('C',1,'À§Çè');
-insert into cust_status values ('C',2,'À§Çè');
-insert into cust_status values ('D',1,'À§Çè');
-insert into cust_status values ('D',2,'À§Çè');
-insert into cust_status values ('D',3,'Á¤»ó');
-insert into cust_status values ('E',1,'Á¤»ó');
+insert into cust_status values ('A',1,'ì •ìƒ');
+insert into cust_status values ('A',2,'ìœ„í—˜');
+insert into cust_status values ('B',1,'ì •ìƒ');
+insert into cust_status values ('B',2,'ì •ìƒ');
+insert into cust_status values ('C',1,'ìœ„í—˜');
+insert into cust_status values ('C',2,'ìœ„í—˜');
+insert into cust_status values ('D',1,'ìœ„í—˜');
+insert into cust_status values ('D',2,'ìœ„í—˜');
+insert into cust_status values ('D',3,'ì •ìƒ');
+insert into cust_status values ('E',1,'ì •ìƒ');
 commit;
 
 select * from cust_status;
 
 /*
-Q1>  cust_id º°·Î status °ªÀÌ  ÇÑ Á¾·ù¸¸ °¡Áø  cust_id ¸¸ Ãâ·Â
-Q2>  cust_id º°·Î status °ªÀÌ  ÇÑ Á¾·ù¸¸ °¡Áø  Row ÀüÃ¼¸¦ Ãâ·Â
+Q1>  cust_id ë³„ë¡œ status ê°’ì´  í•œ ì¢…ë¥˜ë§Œ ê°€ì§„  cust_id ë§Œ ì¶œë ¥
+Q2>  cust_id ë³„ë¡œ status ê°’ì´  í•œ ì¢…ë¥˜ë§Œ ê°€ì§„  Row ì „ì²´ë¥¼ ì¶œë ¥
 */
-/*1-Q1-1 count·Î ÇØ°á */
+/*1-Q1-1 countë¡œ í•´ê²° */
 select distinct cust_id
 from (
         select count(*) over(partition by cust_id,status) cnt_a
@@ -35,7 +35,7 @@ from (
         from cust_status cust
       )
 where cnt_a=cnt_b;
-/*1-Q2-1 count·Î ÇØ°á */
+/*1-Q2-1 countë¡œ í•´ê²° */
 select cust_id,CUST_ID_SEQ,STATUS
 from (
         select count(*) over(partition by cust_id,status) cnt_a
@@ -44,7 +44,7 @@ from (
         from cust_status
      )
 where cnt_a=cnt_b;
-/*1-Q1-2 ROW_NUMBER()¿Í max·Î ÇØ°á */
+/*1-Q1-2 ROW_NUMBER()ì™€ maxë¡œ í•´ê²° */
 select distinct a_max.id as cust_id
 from (
         select max(cnt) OVER(PARTITION BY cust_id,status order by cust_id) as max_cnt
@@ -63,7 +63,7 @@ from (
                 )
       ) a_max
       where a_max.max_cnt = a_max.max_cnt2 ;    
-/*1-Q2-2 ROW_NUMBER()¿Í max·Î ÇØ°á */     
+/*1-Q2-2 ROW_NUMBER()ì™€ maxë¡œ í•´ê²° */     
 select a_max.id as cust_id, cust_id_seq, status
 from (
         select max(cnt) OVER(PARTITION BY cust_id,status order by cust_id) as max_cnt
@@ -82,7 +82,7 @@ from (
                 )
       ) a_max
       where a_max.max_cnt = a_max.max_cnt2 ;     
-/*1-Q1-3 ÇÏ³ªÀÇ »óÅÂ ¸¸À» °¡Áö°í ÀÖ´Â ¾ÆÀÌµğ¸¸ ÃßÃâ*/
+/*1-Q1-3 í•˜ë‚˜ì˜ ìƒíƒœ ë§Œì„ ê°€ì§€ê³  ìˆëŠ” ì•„ì´ë””ë§Œ ì¶”ì¶œ*/
 select distinct cust.cust_id
 from 
 (
@@ -96,7 +96,7 @@ and minmax.mi = minmax.ma;
 
 
 
-/*1-Q2-3 ÇÏ³ªÀÇ »óÅÂ ¸¸À» °¡Áö°í ÀÖ´Â ¾ÆÀÌµğ¸¸ ÃßÃâ*/
+/*1-Q2-3 í•˜ë‚˜ì˜ ìƒíƒœ ë§Œì„ ê°€ì§€ê³  ìˆëŠ” ì•„ì´ë””ë§Œ ì¶”ì¶œ*/
 select distinct cust.*
 from 
 (
@@ -109,9 +109,9 @@ where cust.CUST_ID = minmax.id
 and minmax.mi = minmax.ma;
 
 /*
-2. ¾Æ·¡¿Í °°Àº TableÀ» »ı¼º 
-,Data¸¦ ÀÔ·ÂÇÑ ÈÄ 20190101~20191231±îÁö 
-ÃÑ 365°Ç ÀÌ Á¶È¸µÇµµ·Ï ÀÏÀÚº°Áı°è¸¦ ±¸ÇÏ½Ã¿ä.
+2. ì•„ë˜ì™€ ê°™ì€ Tableì„ ìƒì„± 
+,Dataë¥¼ ì…ë ¥í•œ í›„ 20190101~20191231ê¹Œì§€ 
+ì´ 365ê±´ ì´ ì¡°íšŒë˜ë„ë¡ ì¼ìë³„ì§‘ê³„ë¥¼ êµ¬í•˜ì‹œìš”.
 */
 drop table repay_test;
 create table repay_test 
@@ -121,15 +121,15 @@ create table repay_test
   rbno       varchar2(15) not null,
   loan_bal_amt number not null
   );
-insert into repay_test values ('20190103','È«±æµ¿','1234567-1234567',1500000);
-insert into repay_test values ('20190906','È«±æµ¿','1234567-1234567',1000000);  
-insert into repay_test values ('20190909','È«±æµ¿','1234567-1234567', 500000);
-insert into repay_test values ('20190306','°í±æµ¿','1234567-1234567', 700000);
-insert into repay_test values ('20190507','°í±æµ¿','1234567-1234567', 400000);
-insert into repay_test values ('20190809','°í±æµ¿','1234567-1234567', 200000);
-insert into repay_test values ('20200506','±è±æµ¿','1234567-1234567',9000000);
-insert into repay_test values ('20200707','±è±æµ¿','1234567-1234567',5000000);
-insert into repay_test values ('20201009','±è±æµ¿','1234567-1234567',2000000);
+insert into repay_test values ('20190103','í™ê¸¸ë™','1234567-1234567',1500000);
+insert into repay_test values ('20190906','í™ê¸¸ë™','1234567-1234567',1000000);  
+insert into repay_test values ('20190909','í™ê¸¸ë™','1234567-1234567', 500000);
+insert into repay_test values ('20190306','ê³ ê¸¸ë™','1234567-1234567', 700000);
+insert into repay_test values ('20190507','ê³ ê¸¸ë™','1234567-1234567', 400000);
+insert into repay_test values ('20190809','ê³ ê¸¸ë™','1234567-1234567', 200000);
+insert into repay_test values ('20200506','ê¹€ê¸¸ë™','1234567-1234567',9000000);
+insert into repay_test values ('20200707','ê¹€ê¸¸ë™','1234567-1234567',5000000);
+insert into repay_test values ('20201009','ê¹€ê¸¸ë™','1234567-1234567',2000000);
 commit;
 select * from repay_test;
 
