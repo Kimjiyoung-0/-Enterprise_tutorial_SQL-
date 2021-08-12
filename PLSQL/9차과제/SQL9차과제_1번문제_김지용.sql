@@ -1,11 +1,11 @@
 CREATE OR REPLACE FUNCTION index_column_function(f_user varchar2,f_empname varchar2)
     RETURN VARCHAR2 
 IS
-   v_temp VARCHAR2(1000); -- column_nameÀ» ÀúÀåÇÒ º¯¼ö
-   v_column VARCHAR2(1000); -- column_nameÀ» list·Î ÀúÀåÇÒ º¯¼ö
+   v_temp VARCHAR2(1000); -- column_nameì„ ì €ì¥í•  ë³€ìˆ˜
+   v_column VARCHAR2(1000); -- column_nameì„ listë¡œ ì €ì¥í•  ë³€ìˆ˜
    v_cnt number;
 BEGIN
-    --ÇàÀÇ °³¼ö Ã¼Å©
+    --í–‰ì˜ ê°œìˆ˜ ì²´í¬
     SELECT max(rownum)
     into v_cnt
     FROM all_ind_columns a  
@@ -13,7 +13,7 @@ BEGIN
     and a.index_name = f_empname;
     
     
-    --ÇàÀÇ °¹¼ö¸¸Å­ ¹İº¹
+    --í–‰ì˜ ê°¯ìˆ˜ë§Œí¼ ë°˜ë³µ
     for i in 1..v_cnt
     loop
 
@@ -27,12 +27,12 @@ BEGIN
             and a.index_name = f_empname
             )
         where num =i;
-        --list·Î Â÷°îÂ÷°îÀúÀå
+        --listë¡œ ì°¨ê³¡ì°¨ê³¡ì €ì¥
         v_column := v_column
             ||v_temp
             ||',';
     end loop;
-    --¸Ç ¿À¸¥ÂÊ ÀÚ¸£±â
+    --ë§¨ ì˜¤ë¥¸ìª½ ìë¥´ê¸°
     v_column := rtrim(v_column,',');
     RETURN v_column;     
 
