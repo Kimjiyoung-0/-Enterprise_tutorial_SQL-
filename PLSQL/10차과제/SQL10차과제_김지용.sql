@@ -1,49 +1,49 @@
 create or replace procedure restore_sql_procedure
 (
-f_user varchar2,  -- user ·Î ºÎÅÍ ÀÔ·Â¹ŞÀ» À¯ÀúÀÌ¸§
-f_tabname varchar2 -- user ·Î ºÎÅÍ ÀÔ·Â¹ŞÀ» Å×ÀÌºíÀÌ¸§
+f_user varchar2,  -- user ë¡œ ë¶€í„° ì…ë ¥ë°›ì„ ìœ ì €ì´ë¦„
+f_tabname varchar2 -- user ë¡œ ë¶€í„° ì…ë ¥ë°›ì„ í…Œì´ë¸”ì´ë¦„
     
 )
 is
     
-    --TABLE °ü·Ãº¯¼ö
-    type v_temp_tab is table of sys.dba_tab_columns%rowtype -- Å×ÀÌºíÀÇ Å¸ÀÔÀ» ±×´ë·Î º¹»çÇÏ¿© º¯¼ö»ı¼º
+    --TABLE ê´€ë ¨ë³€ìˆ˜
+    type v_temp_tab is table of sys.dba_tab_columns%rowtype -- í…Œì´ë¸”ì˜ íƒ€ì…ì„ ê·¸ëŒ€ë¡œ ë³µì‚¬í•˜ì—¬ ë³€ìˆ˜ìƒì„±
     index by binary_integer;
     
     v_temp v_temp_tab;
-    r_notnull varchar(10); -- not null Á¶°ÇÀ» È®ÀÎÇÏ´Â º¯¼ö
-    r_real_leng varchar(100); -- columnÀÇ ±æÀÌ¸¦ À§ÇÑ º¯¼ö
-    r_column varchar2(1000); -- ÇÑÁÙ·Î listÇÏ¿© Ãâ·ÂÇÏ±â À§ÇÑ º¯¼ö
-    i binary_integer := 0; -- count¸¦ À§ÇÑ º¯¼ö 
-    j binary_integer := 0; -- count¸¦ À§ÇÑ º¯¼ö 
+    r_notnull varchar(10); -- not null ì¡°ê±´ì„ í™•ì¸í•˜ëŠ” ë³€ìˆ˜
+    r_real_leng varchar(100); -- columnì˜ ê¸¸ì´ë¥¼ ìœ„í•œ ë³€ìˆ˜
+    r_column varchar2(1000); -- í•œì¤„ë¡œ listí•˜ì—¬ ì¶œë ¥í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
+    i binary_integer := 0; -- countë¥¼ ìœ„í•œ ë³€ìˆ˜ 
+    j binary_integer := 0; -- countë¥¼ ìœ„í•œ ë³€ìˆ˜ 
     
-    --INDEX °ü·Ãº¯¼ö
+    --INDEX ê´€ë ¨ë³€ìˆ˜
     type v_temp_col is table of sys.dba_ind_columns%rowtype
-    index by binary_integer; --Å×ÀÌºí Å¸ÀÔ ¼±¾ğ
-    v_column varchar2(1000); -- ÇÑÁÙ·Î listÇÏ¿© Ãâ·ÂÇÏ±â À§ÇÑ º¯¼ö
-    v_temp2 v_temp_col; -- column_nameÀ» ÀúÀåÇÒ º¯¼ö
+    index by binary_integer; --í…Œì´ë¸” íƒ€ì… ì„ ì–¸
+    v_column varchar2(1000); -- í•œì¤„ë¡œ listí•˜ì—¬ ì¶œë ¥í•˜ê¸° ìœ„í•œ ë³€ìˆ˜
+    v_temp2 v_temp_col; -- column_nameì„ ì €ì¥í•  ë³€ìˆ˜
     
-    not_result exception; -- »ç¿ëÀÚ Á¤ÀÇ exception 
+    not_result exception; -- ì‚¬ìš©ì ì •ì˜ exception 
     
     
 
 begin
-    select NVL(max(line),0)-- Áö±İ±îÁö ÀÔ·ÂµÈ LINEÀÇ °¡Àå Å«°ªÀÔ·Â nullÀÌ¸é 0À¸·Î ½ÃÀÛ
+    select NVL(max(line),0)-- ì§€ê¸ˆê¹Œì§€ ì…ë ¥ëœ LINEì˜ ê°€ì¥ í°ê°’ì…ë ¥ nullì´ë©´ 0ìœ¼ë¡œ ì‹œì‘
     into i
     from ddl_scripts  ; 
     
 
     
-    --CREATE TABLE ÀÔ·Â
+    --CREATE TABLE ì…ë ¥
     i := i+1;
     insert into ddl_scripts (owner, object_type, object_name,line,text)
         values (f_user, 'TABLE',f_tabname, i,'CREATE TABLE'||' '||f_user||'.'||f_tabname);
-    --°ıÈ£ ÀÔ·Â
+    --ê´„í˜¸ ì…ë ¥
     i := i+1;
     insert into ddl_scripts (owner, object_type, object_name,line,text)
         values (f_user, 'TABLE',f_tabname, i,'(');    
         
-        --1ºÎÅÍ ÇàÀÇ °³¼ö¸¸Å­ ¹İº¹¹®À» µ¹¸°´Ù.
+        --1ë¶€í„° í–‰ì˜ ê°œìˆ˜ë§Œí¼ ë°˜ë³µë¬¸ì„ ëŒë¦°ë‹¤.
     for tab_list in 
         (
             select *
@@ -66,29 +66,29 @@ begin
             else
                 r_notnull := '';
             end if; 
-            --nullÀÎÁö ¾Æ´ÑÁö Ã¼Å©
+            --nullì¸ì§€ ì•„ë‹Œì§€ ì²´í¬
             
             if v_temp(i).data_precision is not null then
                 r_real_leng := v_temp(i).data_precision ;
             else
                 r_real_leng := v_temp(i).data_length;
             end if; 
-            --datatype¿¡ µû¶ó ´Ù¸¥°ªÀ» Ãâ·ÂÇØ¾ßÇÔÀ¸·Î precisionÀÌ nullÀÎÁö È®ÀÎ
+            --datatypeì— ë”°ë¼ ë‹¤ë¥¸ê°’ì„ ì¶œë ¥í•´ì•¼í•¨ìœ¼ë¡œ precisionì´ nullì¸ì§€ í™•ì¸
               
             if (v_temp(i).data_scale is not null) and (v_temp(i).data_scale > 0) then
                 r_real_leng := r_real_leng||','||v_temp(i).data_scale;
             else
                 r_real_leng := r_real_leng||'';
             end if; 
-            --v_temp_scaleÀÌ nullÀÎÁö È®ÀÎÇÏ¸é¼­, 0º¸´Ù Å«Áö Ã¼Å©
+            --v_temp_scaleì´ nullì¸ì§€ í™•ì¸í•˜ë©´ì„œ, 0ë³´ë‹¤ í°ì§€ ì²´í¬
             
             r_real_leng := '('||r_real_leng||')';
-            --Çü½Ä¿¡ ¸Â°Ô ¼öÁ¤      
+            --í˜•ì‹ì— ë§ê²Œ ìˆ˜ì •      
             if v_temp(i).data_type = 'DATE' then
              r_real_leng :='';
              end if;
              
-             --date Å¸ÀÔÀÏ °æ¿ì Ãâ·Â¾ÈÇÔ
+             --date íƒ€ì…ì¼ ê²½ìš° ì¶œë ¥ì•ˆí•¨
             r_column := v_temp(i).column_name
                 ||' '
                 ||v_temp(i).data_type
@@ -103,20 +103,20 @@ begin
             values (f_user, 'TABLE',f_tabname, i,'    '||r_column);
             
     end loop;
-    -- ¸¶Áö¸· ÄÃ·³ µÚ¿¡ ,¸¦ Â¥¸£±â À§ÇÑ update¹®
+    -- ë§ˆì§€ë§‰ ì»¬ëŸ¼ ë’¤ì— ,ë¥¼ ì§œë¥´ê¸° ìœ„í•œ updateë¬¸
     update ddl_scripts set text = ' '||rtrim(r_column,',') where line= i ;
 
-    --°ıÈ£ÀÔ·Â
+    --ê´„í˜¸ì…ë ¥
     i := i+1;
     insert into ddl_scripts (owner, object_type, object_name,line,text)
         values (f_user, 'TABLE',f_tabname, i,')');
-    --¹®ÀåÀÔ·Â
+    --ë¬¸ì¥ì…ë ¥
     i := i+1;
     insert into ddl_scripts (owner, object_type, object_name,line,text)
         values (f_user, 'TABLE',f_tabname, i,'TABLESPACE USERS;');
-    --1Â÷ Ä¿¹Ô
+    --1ì°¨ ì»¤ë°‹
     commit;
-    --ÀÌÈÄ·Î´Â INDEX ¹®Àå ÀÔ·Â
+    --ì´í›„ë¡œëŠ” INDEX ë¬¸ì¥ ì…ë ¥
     for ind_list in 
         (
             select distinct INDEX_NAME
@@ -128,17 +128,17 @@ begin
     
     
  
-            --CREATE INDEX ÀÔ·Â
+            --CREATE INDEX ì…ë ¥
             i := i+1;
             insert into ddl_scripts (owner, object_type, object_name,line,text)
                 values (f_user, 'INDEX',f_tabname, i,'CREATE INDEX'||' '||f_user||'.'||ind_list.INDEX_NAME);
             
-            --ÀÎµ¦½º owner ÀÔ·Â
+            --ì¸ë±ìŠ¤ owner ì…ë ¥
             i := i+1;
             insert into ddl_scripts (owner, object_type, object_name,line,text)
                 values (f_user, 'INDEX',f_tabname, i,'ON'||' '||f_user||'.'||f_tabname);
                 
-                for col_list in  --¹İº¹¹®
+                for col_list in  --ë°˜ë³µë¬¸
                 (
                     select a.COLUMN_NAME
                     from sys.dba_ind_columns a   
@@ -147,7 +147,7 @@ begin
                     order by COLUMN_POSITION
                 )
                 loop
-                    --list·Î Â÷°îÂ÷°îÀúÀå
+                    --listë¡œ ì°¨ê³¡ì°¨ê³¡ì €ì¥
                     v_column := v_column
                         ||col_list.COLUMN_NAME
                         ||',';
@@ -155,11 +155,11 @@ begin
                 end loop;
                 v_column := rtrim(v_column,',');
                 
-            --°ıÈ£ ÀÔ·Â
+            --ê´„í˜¸ ì…ë ¥
             i := i+1;
             insert into ddl_scripts (owner, object_type, object_name,line,text)
                 values (f_user, 'INDEX',f_tabname, i,'('||v_column||')');
-            --¹®ÀåÀÔ·Â
+            --ë¬¸ì¥ì…ë ¥
             i := i+1;
             insert into ddl_scripts (owner, object_type, object_name,line,text)
                 values (f_user, 'INDEX',f_tabname, i,'TABLESPACE USERS;');
@@ -167,7 +167,7 @@ begin
    
     end loop;
     
-     --2Â÷ Ä¿¹Ô
+     --2ì°¨ ì»¤ë°‹
     commit;
 
 
