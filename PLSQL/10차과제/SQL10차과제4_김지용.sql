@@ -26,8 +26,6 @@ is
     
     not_result exception; -- 사용자 정의 exception 
     
-    
-
 begin
 
     select max(COLUMN_NAME) -- 값이 있는지 확인
@@ -124,7 +122,7 @@ begin
         values (f_user, 'TABLE',f_tabname, i,'TABLESPACE USERS;');
     --1차 커밋,i 초기화
     commit;
-    
+      
     --이후로는 INDEX 문장 입력
     for ind_list in 
         (
@@ -133,16 +131,14 @@ begin
             where table_owner = f_user
             and table_name=f_tabname
         )loop
-            j := j+1;
-            i := 0;
-            v_column :='';
+            select max(decode(CONSTRAINT_TYPE,'P','UNIQUE',null))
+            into v_unique
+            from all_constraints
+            where table_name = f_tabname
+            and owner = f_user
+            and INDEX_NAME = ind_list.INDEX_NAME;
             
-            
-            if j=1 then
-                v_unique:= 'UNIQUE';
-            else
-                v_unique:= '';
-            end if;
+            i:=0;
             
             --CREATE INDEX 입력
             i := i+1;
@@ -179,8 +175,7 @@ begin
             i := i+1;
             insert into ddl_scripts (owner, object_type, object_name,line,text)
                 values (f_user, 'INDEX',ind_list.INDEX_NAME, i,'TABLESPACE USERS;');
-              
-   
+                
     end loop;
     
      --2차 커밋
