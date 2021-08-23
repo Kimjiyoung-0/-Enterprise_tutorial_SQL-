@@ -23,5 +23,10 @@ IS
         f_user varchar2,  -- user 로 부터 입력받을 유저이름
         f_viewname varchar2 -- user 로 부터 입력받을 인덱스이름
     );
+        procedure seq_proc
+    (
+        f_user varchar2,  -- user 로 부터 입력받을 유저이름
+        f_seqname varchar2 -- user 로 부터 입력받을 시퀸스이름
+    );
     
 END ddl_get_pkg;

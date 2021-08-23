@@ -370,4 +370,72 @@ IS
         when others then --그외
             RAISE_APPLICATION_ERROR(-20998,'others error');
     end view_proc;
+--------------------seq 프로시저-----------------------
+procedure seq_proc
+    (
+        f_user varchar2,  -- user 로 부터 입력받을 유저이름
+        f_seqname varchar2 -- user 로 부터 입력받을 시퀸스이름
+    )
+        is
+        i binary_integer := 0; -- count를 위한 변수 
+        v_text varchar2(100); -- 한줄로 list받기위한 변수
+        
+        not_result exception; -- 사용자 정의 exception
+      
+    begin
+        for seq_list in 
+        (
+                select *          
+                from sys.dba_sequences    
+                where sequence_owner = f_user
+                and sequence_name=f_seqname
+         )loop 
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,'CREATE SEQUENCE '||seq_list.SEQUENCE_NAME);
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,'INCREMENT_BY '||seq_list.INCREMENT_BY);
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,'MIN_VALUE '||seq_list.MIN_VALUE);
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,'MAX_VALUE '||seq_list.MAX_VALUE);
+                
+            if seq_list.cycle_flag = 'N' then
+                v_text := 'NOCYCLE';
+            else
+                v_text := 'CYCLE';
+            end if;           
+                
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,v_text);
+                
+            if seq_list.cache_size != 0 then
+            
+                i := i+1;
+                insert into ddl_scripts (owner, object_type, object_name,line,text)
+                    values (f_user, 'SEQUENCE',f_seqname, i,'CACHE_SIZE '||seq_list.cache_size); 
+            end if;
+            
+            if seq_list.ORDER_FLAG = 'N' then
+                v_text := 'NOORDER';
+            else
+                v_text := 'ORDER';
+            end if;
+            
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,v_text);
+            
+            i:=i+1;
+            insert into ddl_scripts (owner, object_type, object_name,line,text)
+                values (f_user, 'SEQUENCE',f_seqname, i,';');
+           
+           
+            
+        end loop;
+    end seq_proc;
 END ddl_get_pkg;
