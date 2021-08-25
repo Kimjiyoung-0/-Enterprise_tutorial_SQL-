@@ -1,0 +1,35 @@
+SQL11차과제 테스트용.sql
+-테이블 select권한도 추가할 수 있는 sql문을 추가해 권한 문제 해결
+
+SQL11차과제body_5_김지용.sql
+-source 프로시저,syn 프로시저,seq 프로시저는 
+반복문을 사용하지 않고, 
+insert into (...) select를 사용하여 처리 하였으나,
+
+다른 프로시저들은 특성상 반복문을 사용하게 되었습니다.
+
+-tab 프로시저 
+CREATE TABLE (
+까지는 반복문을 쓰지 않았으나 ,
+column들을 insert 하기 위해 반복문을 사용하였습니다.
+
+-index프로시저
+index프로시저는 
+유저명, 테이블명 으로 검색되는데
+이때 두개 이상의 index가 검색되어 
+이를 처리하기위해  반복문을 사용하였습니다.
+
+-view 프로시저
+view프로시저는 
+테이블에 데이터가 한줄로 저장되어있어 
+이것을 다시 여러 라인으로 나누는 과정에 반복문이 쓰였습니다.
+
+select 한번하는  프로시저  
+view,ind,seq
+select 두번하는 프로시저 
+tab,source,syn
+
+tab,source -table 타입으로 해결?
+syn - table 타입으로 해결?
+
+
