@@ -1,7 +1,9 @@
+--테스트 계정  생성 문구
 create user test1 identified by oracle;
 
+--로그인, 자원 사용권한 부여
 grant connect, resource to test1;
-
+--테스트 계정이 테이블 스페이스를 이용할 수 있게 할당
 alter user test1 default tablespace users quota unlimited on users;
 
 -- system계정으로 먼저 synonym을 만든다.
@@ -37,7 +39,7 @@ GRANT SELECT ON dba_synonyms    TO  test1;
 
 EXEC ddl_get_pkg.tab_proc   ('HR','EMP');--table
 
-EXEC ddl_get_pkg.ind_proc   ('HR','EMP');--index
+EXEC ddl_get_pkg.ind_proc   ('HRsadf','EMP');--index
 
 EXEC ddl_get_pkg.view_proc  ('HR','EMP_DETAILS_VIEW');--view
 
