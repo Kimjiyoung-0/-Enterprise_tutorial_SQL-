@@ -1,50 +1,50 @@
 SELECT * FROM dba_directories; 
--- expdp ¸í·É¾î¸¦ ½Ç½ÀÇÒ scottÀ¯Àú »ı¼º
+-- expdp ëª…ë ¹ì–´ë¥¼ ì‹¤ìŠµí•  scottìœ ì € ìƒì„±
 CREATE USER SCOTT
 IDENTIFIED BY tiger
 DEFAULT TABLESPACE users;
 select * from dba_tablespaces ;
 
--- ·Î±×ÀÎ, ¸®¼Ò½º ±ÇÇÑ ºÎ¿©
+-- ë¡œê·¸ì¸, ë¦¬ì†ŒìŠ¤ ê¶Œí•œ ë¶€ì—¬
 grant connect, resource to scott;
 
 select * from user_tables;
 
--- µğÆúÆ® Å×ÀÌºí ½ºÆäÀÌ½º È®ÀÎ(µğÆúÆ® Å×ÀÌºí ½ºÆäÀÌ½º°¡ ´Ù¸£¸é ¿À·ù ¹ß»ı)
+-- ë””í´íŠ¸ í…Œì´ë¸” ìŠ¤í˜ì´ìŠ¤ í™•ì¸(ë””í´íŠ¸ í…Œì´ë¸” ìŠ¤í˜ì´ìŠ¤ê°€ ë‹¤ë¥´ë©´ ì˜¤ë¥˜ ë°œìƒ)
 select 
     username
     ,default_tablespace
     ,temporary_tablespace 
 from dba_users 
 where username = 'SCOTT' or username = 'HR';
--- µğÆúÆ® ¼³Á¤
+-- ë””í´íŠ¸ ì„¤ì •
 alter user HR default tablespace USERS;
--- µğ·ºÅä¸®¸¦ ¸¸µç´Ù.
+-- ë””ë ‰í† ë¦¬ë¥¼ ë§Œë“ ë‹¤.
 create directory pump_dir as '/app/oracle/19c/datapump';
--- ´Ù½Ã ½Ç½ÀÇÒ¶§¸¦À§ÇÑ »èÁ¦ ¸í·É
+-- ë‹¤ì‹œ ì‹¤ìŠµí• ë•Œë¥¼ìœ„í•œ ì‚­ì œ ëª…ë ¹
 drop directory pump_dir;
--- ¸®´ª½º Ä¿¸Çµå¶óÀÎ¿¡¼­ ÀÔ·Â
--- µğ·ºÅä¸®¿¡ hr.dmpÀÌ¶õ ÀÌ¸§ÀÇ ÆÄÀÏ·Î Å×ÀÌºí hr.emp,hr.dept ÀúÀå
+-- ë¦¬ëˆ…ìŠ¤ ì»¤ë§¨ë“œë¼ì¸ì—ì„œ ì…ë ¥
+-- ë””ë ‰í† ë¦¬ì— hr.dmpì´ë€ ì´ë¦„ì˜ íŒŒì¼ë¡œ í…Œì´ë¸” hr.emp,hr.dept ì €ì¥
 expdp HR/HR dumpfile = hr.dmp directory = pump_dir tables=hr.emp,hr.dept;
--- ¸®´ª½º Ä¿¸Çµå¶óÀÎ¿¡¼­ ÀÔ·Â
--- µğ·ºÅä¸®¿¡ test1.dmpÀÌ¶õ ÀÌ¸§ÀÇ ÆÄÀÏ·Î Å×ÀÌºí test1.DDL_SCRIPTS ÀúÀå
+-- ë¦¬ëˆ…ìŠ¤ ì»¤ë§¨ë“œë¼ì¸ì—ì„œ ì…ë ¥
+-- ë””ë ‰í† ë¦¬ì— test1.dmpì´ë€ ì´ë¦„ì˜ íŒŒì¼ë¡œ í…Œì´ë¸” test1.DDL_SCRIPTS ì €ì¥
 expdp test1/oracle dumpfile = test1.dmp directory = pump_dir tables=test1.DDL_SCRIPTS;
 
--- Å×ÀÌºí ½ºÆäÀÌ½º Å©±âÁ¦ÇÑÀ» ¹«ÇÑÀ¸·Î ´Ã¸°´Ù.
+-- í…Œì´ë¸” ìŠ¤í˜ì´ìŠ¤ í¬ê¸°ì œí•œì„ ë¬´í•œìœ¼ë¡œ ëŠ˜ë¦°ë‹¤.
 alter user scott default tablespace USERS quota unlimited on users;
--- µğ·ºÅä¸® ÀĞ´Â ±ÇÇÑÀ» ÁØ´Ù.
+-- ë””ë ‰í† ë¦¬ ì½ëŠ” ê¶Œí•œì„ ì¤€ë‹¤.
 grant read, write on directory pump_dir to scott;
 --
--- EXP_FULL_DATABASE µ¥ÀÌÅÍº£ÀÌ½º ÀÍ½ºÆ÷Æ® ±ÇÇÑ
--- IMP_FULL_DATABASE µ¥ÀÌÅÍº£ÀÌ½º ÀÓÆ÷Æ® ±ÇÇÑ
+-- EXP_FULL_DATABASE ë°ì´í„°ë² ì´ìŠ¤ ìµìŠ¤í¬íŠ¸ ê¶Œí•œ
+-- IMP_FULL_DATABASE ë°ì´í„°ë² ì´ìŠ¤ ì„í¬íŠ¸ ê¶Œí•œ
 grant imp_full_database to scott;
 
--- ¸®´ª½º Ä¿¸Çµå¶óÀÎ¿¡¼­ ÀÔ·Â
--- import scott °èÁ¤¿¡ hr.dmp ÆÄÀÏÀÇ table hr.emp,hr.dept Á¤º¸ ¾÷·Îµå 
+-- ë¦¬ëˆ…ìŠ¤ ì»¤ë§¨ë“œë¼ì¸ì—ì„œ ì…ë ¥
+-- import scott ê³„ì •ì— hr.dmp íŒŒì¼ì˜ table hr.emp,hr.dept ì •ë³´ ì—…ë¡œë“œ 
 impdp scott/tiger dumpfile = hr.dmp directory = pump_dir tables=hr.emp,hr.dept ;
--- content=data_only ¿ÀÁ÷ µ¥ÀÌÅÍ¸¸ ¾÷·Îµå
+-- content=data_only ì˜¤ì§ ë°ì´í„°ë§Œ ì—…ë¡œë“œ
 impdp scott/tiger dumpfile = hr.dmp directory = pump_dir tables=hr.emp,hr.dept content=data_only;
--- remap_schema = hr:scott hr ½ºÅ°¸¶ÀÇ Å×ÀÌºíÀ» scott ½ºÅ°¸¶·Î ÀÓÆ÷Æ®
+-- remap_schema = hr:scott hr ìŠ¤í‚¤ë§ˆì˜ í…Œì´ë¸”ì„ scott ìŠ¤í‚¤ë§ˆë¡œ ì„í¬íŠ¸
 impdp scott/tiger dumpfile = hr.dmp directory = pump_dir tables=hr.emp,hr.dept remap_schema = hr:scott;
 
 drop user scott;
